@@ -1,0 +1,1 @@
+press enter after writing last line of asm file,  it generates new line chtracter for last line
