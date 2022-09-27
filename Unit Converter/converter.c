@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdint.h>
+#define BINARY_ARR_SIZE 17
 
 void choose_options(void);
 int64_t two_power(int8_t);
 void bin_to_dec(void);
+void dec_to_bin(void);
+void reset_array(char[],int);
 
 int64_t input_num = 0, output_num = 0;
 
@@ -15,29 +18,25 @@ int main(int argc, char* argv[])
 
 void choose_options(void)
 {
-    uint8_t choice, choice_count = 1;
-    char units[5][20] = {"Binary","Decimal","Hexa-Decimal","Octal"};
-
-    printf("Available Converters:\n");
-    for (int i = 0; i < 4; i++){
-        for (int j = 0; j < 4; j++){
-            if (i != j)
-                printf("%d. %s To %s\n",choice_count++,units[i],units[j]);
-        }
-    }
+    uint8_t choice;
+    printf("1. Binary to Decimal\n");
+    printf("2. Decimal to Binary\n");    
     printf("\nEnter Choice: ");
     scanf("%hhd", &choice);
+    output_num = 0;
 
     switch (choice)
     {
     case 1:
         bin_to_dec();       
         break;
+    case 2:
+        dec_to_bin();
+        break;
     
     default:
         break;
     }
-
 }
 
 void bin_to_dec (void)
@@ -45,7 +44,6 @@ void bin_to_dec (void)
     printf("\nEnter Binary Number:[Max 16 bits]: ");
     scanf("%ld", &input_num);
     int temp, index = 0;
-    output_num = 0;
 
     while (input_num){
         temp = input_num % 10;
@@ -63,4 +61,32 @@ int64_t two_power(int8_t pow)
         result = result * 2;
     }
     return result;
+}
+
+void dec_to_bin (void)
+{   
+    printf("\nEnter Decimal Number:[Max 65535]: ");
+    scanf("%ld", &input_num);
+    int temp, index = 0;
+
+    /* binary array size = 16 + null char = 17 */
+    char result[BINARY_ARR_SIZE];
+    reset_array(result,BINARY_ARR_SIZE);
+
+    /* output bits = 16 = array_size -1 = 0 to 15 */
+    for (uint8_t i = 0; i < BINARY_ARR_SIZE-1; i++){
+        if (input_num & (1 << i)){
+            result[16-i-1] = '1';
+        } else{
+            result[16-i-1] = '0';
+        }
+    }
+    printf("Binary: %s\n", result);
+}
+
+void reset_array(char arr[], int size)
+{
+    for (uint8_t i = 0; i < size; i++){
+        arr[i] = 0;
+    }
 }
