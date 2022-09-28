@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdint.h>
 #define BINARY_ARR_SIZE 17
+#define HEX_ARR_SIZE 5
 
 void choose_options(void);
 int64_t two_power(int8_t);
 void bin_to_dec(void);
 void dec_to_bin(void);
+void bin_to_hex(void);
 void reset_array(char[],int);
 
 int64_t input_num = 0, output_num = 0;
@@ -19,12 +21,13 @@ int main(int argc, char* argv[])
 void choose_options(void)
 {
     uint8_t choice;
-    printf("1. Binary to Decimal\n");
-    printf("2. Decimal to Binary\n");    
+    printf("1. Binary  To Decimal\n");
+    printf("2. Decimal To Binary\n");
+    printf("3. Binary  To Hexadecimal\n");
     printf("\nEnter Choice: ");
     scanf("%hhd", &choice);
     output_num = 0;
-
+ 
     switch (choice)
     {
     case 1:
@@ -33,7 +36,9 @@ void choose_options(void)
     case 2:
         dec_to_bin();
         break;
-    
+    case 3:
+        bin_to_hex();
+        break;
     default:
         break;
     }
@@ -82,6 +87,30 @@ void dec_to_bin (void)
         }
     }
     printf("Binary: %s\n", result);
+}
+
+void bin_to_hex(void)
+{
+    printf("\nEnter Binary Number:[Max 16 bits]: ");
+    scanf("%ld", &input_num);
+    char arr[HEX_ARR_SIZE] = {'0','0','0','0',0};
+    int temp1 = 0, temp2 = 0, index = 3;
+
+    while (input_num){
+        for (int8_t i = 0; i < 4; i++){
+            temp1 = input_num % 10;
+            temp2 += temp1 *  two_power(i);
+            input_num = input_num / 10;
+        }
+        if (temp2 <= 9)
+            arr[index] = temp2 + 48;
+        else 
+            arr[index] = temp2 + 55; /* 10 + 55 = 65 = 'A */
+        index--;
+        temp1 = 0;
+        temp2 = 0;
+    }
+    printf("Hex: %s\n",arr);
 }
 
 void reset_array(char arr[], int size)
