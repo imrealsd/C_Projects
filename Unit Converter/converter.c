@@ -1,14 +1,17 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 #define BINARY_ARR_SIZE 17
 #define HEX_ARR_SIZE 5
+
 
 void choose_options(void);
 int64_t two_power(int8_t);
 void bin_to_dec(void);
 void dec_to_bin(void);
 void bin_to_hex(void);
-void reset_array(char[],int);
+void reset_array(char[],uint8_t);
+void hex_to_bin (void);
 
 int64_t input_num = 0, output_num = 0;
 
@@ -24,6 +27,7 @@ void choose_options(void)
     printf("1. Binary  To Decimal\n");
     printf("2. Decimal To Binary\n");
     printf("3. Binary  To Hexadecimal\n");
+    printf("4. Hex to Binary\n");
     printf("\nEnter Choice: ");
     scanf("%hhd", &choice);
     output_num = 0;
@@ -38,6 +42,9 @@ void choose_options(void)
         break;
     case 3:
         bin_to_hex();
+        break;
+    case 4:
+        hex_to_bin();
         break;
     default:
         break;
@@ -94,7 +101,7 @@ void bin_to_hex(void)
     printf("\nEnter Binary Number:[Max 16 bits]: ");
     scanf("%ld", &input_num);
     char arr[HEX_ARR_SIZE] = {'0','0','0','0',0};
-    int temp1 = 0, temp2 = 0, index = 3;
+    uint8_t temp1 = 0, temp2 = 0, index = 3;
 
     while (input_num){
         for (int8_t i = 0; i < 4; i++){
@@ -113,9 +120,37 @@ void bin_to_hex(void)
     printf("Hex: %s\n",arr);
 }
 
-void reset_array(char arr[], int size)
-{
-    for (uint8_t i = 0; i < size; i++){
-        arr[i] = 0;
+void hex_to_bin (void)
+{   
+    char bin_arr[BINARY_ARR_SIZE];
+    char hex_arr[HEX_ARR_SIZE];
+    printf("\nEnter Hex Number:[Max 4 digits, use capital]: 0x");
+    scanf("%s", hex_arr);
+    reset_array(bin_arr,BINARY_ARR_SIZE);
+    uint8_t temp1 = 0, temp2 = 0, index = BINARY_ARR_SIZE-2;
+
+    for (int8_t i = strlen(hex_arr)-1; i >= 0; i--){
+        if (hex_arr[i] >= 65)
+            temp1 = hex_arr[i] - 55;
+        else
+            temp1 = hex_arr[i] - 48;
+            
+        for (int j = 0; j <= 3; j++){
+            
+            if (temp1 & (1 << j))
+                bin_arr[index] = '1';
+            else
+                bin_arr[index] = '0';
+            index--;
+        }
+    }
+    printf("BIN: %s\n",bin_arr);
+}
+
+void reset_array(char arr[], uint8_t size)
+{   
+    arr[size-1] = 0;
+    for (uint8_t i = 0; i < size-1; i++){
+        arr[i] = '0';
     }
 }
