@@ -25,36 +25,47 @@ int main(int argc, char* argv[])
 }
 
 void choose_options(void)
-{
-    uint8_t choice;
-    printf("1. Binary  To Decimal\n");
-    printf("2. Decimal To Binary\n");
-    printf("3. Binary  To Hexadecimal\n");
-    printf("4. Hexadecimal To Binary\n");
-    printf("5. Decimal To Hexadecimal\n");
-    printf("\nEnter Choice: ");
-    scanf("%hhd", &choice);
-    output_num = 0;
- 
-    switch (choice)
-    {
-    case 1:
-        bin_to_dec();       
-        break;
-    case 2:
-        dec_to_bin();
-        break;
-    case 3:
-        bin_to_hex();
-        break;
-    case 4:
-        hex_to_bin();
-        break;
-    case 5:
-        hex_to_dec();
-        break;
-    default:
-        break;
+{   
+    int continue_flag = 1;
+    char ch;
+
+    while (continue_flag) {
+
+        uint8_t choice; 
+        printf("1. Binary  To Decimal\n");
+        printf("2. Decimal To Binary\n");
+        printf("3. Binary  To Hexadecimal\n");
+        printf("4. Hexadecimal To Binary\n");
+        printf("5. Decimal To Hexadecimal\n");
+        printf("\nEnter Choice: ");
+        scanf("%hhd", &choice);
+        output_num = 0;
+    
+        switch (choice)
+        {
+        case 1:
+            bin_to_dec();       
+            break;
+        case 2:
+            dec_to_bin();
+            break;
+        case 3:
+            bin_to_hex();
+            break;
+        case 4:
+            hex_to_bin();
+            break;
+        case 5:
+            hex_to_dec();
+            break;
+        default:
+            break;
+        }
+
+        printf("\nPress 'c' to continue or 'e' to exit:");
+        getchar();              // to get rid of the 'pressed enter' after typing 'c' or 'e'
+        scanf("%c", &ch);
+        (ch == 'c') ? (continue_flag = 1) : (continue_flag = 0);
     }
 }
 
@@ -124,7 +135,7 @@ void bin_to_hex(void)
         temp1 = 0;
         temp2 = 0;
     }
-    printf("Hex: %s\n",arr);
+    printf("Hexadecimal: 0x%s\n",arr);
 }
 
 void hex_to_bin (void)
