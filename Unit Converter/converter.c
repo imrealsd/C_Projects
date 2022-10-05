@@ -14,6 +14,7 @@ void bin_to_hex(void);
 void reset_array(char[],uint8_t);
 void hex_to_bin (void);
 void hex_to_dec(void);
+void dec_to_hex(void);
 
 
 int64_t input_num = 0, output_num = 0;
@@ -36,7 +37,9 @@ void choose_options(void)
         printf("2. Decimal To Binary\n");
         printf("3. Binary  To Hexadecimal\n");
         printf("4. Hexadecimal To Binary\n");
-        printf("5. Decimal To Hexadecimal\n");
+        printf("5. Hexadecimal To Decimal\n");
+        printf("6. Decimal to Hexadecimal\n");
+
         printf("\nEnter Choice: ");
         scanf("%hhd", &choice);
         output_num = 0;
@@ -58,6 +61,9 @@ void choose_options(void)
         case 5:
             hex_to_dec();
             break;
+        case 6:
+            dec_to_hex();
+            break;
         default:
             break;
         }
@@ -68,6 +74,49 @@ void choose_options(void)
         (ch == 'c') ? (continue_flag = 1) : (continue_flag = 0);
     }
 }
+
+void dec_to_hex(void)
+{   
+    char hex_arr[HEX_ARR_SIZE];
+    int8_t bin_buff[32];
+    int8_t bin_index = 31;
+    int8_t hex_index = 3;
+    int8_t temp = 0;
+
+    reset_array(hex_arr, HEX_ARR_SIZE);
+    printf("\nEnter Decimal Number:[Max 65535]: ");
+    scanf("%ld", &input_num);
+
+    for (int8_t i = 0; i < 32; i++){bin_buff[i] = 0;}
+
+    for (int8_t i = 0; i < 32; i++){
+        if (input_num & (1 << i)){
+            bin_buff[bin_index] = 1;
+        } else {
+            bin_buff[bin_index] = 0;
+        }
+        bin_index--;
+    }
+
+    bin_index = 31;
+
+    for (int8_t i = 0; i < 32; i++){
+        for (int8_t j = 0; j < 4; j++) {
+            temp = temp + (bin_buff[bin_index] * two_power(j));
+            bin_index--;
+        }
+        if (temp <= 9)
+            hex_arr[hex_index] = temp + 48;
+        else if (temp >= 10)
+            hex_arr[hex_index] = temp + 55;
+
+        temp = 0;
+        hex_index--;
+    }
+
+    printf("Hexadecimal: 0x%s\n", hex_arr);
+}
+
 
 void bin_to_dec (void)
 {   
