@@ -1,12 +1,15 @@
+/*Included Header Files*/
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 #include "operations.h"
 
-void choose_option(void);
-void copy_to_num_arr (char num[], char buff[], int num_size);
-void display_result(char *result, int size);
+/* Static Function Prototypes */
+static void choose_option(void);
+static void copy_to_num_arr (char num[], char buff[], int num_size);
+static void display_result(char *result, int size);
 
+/*Global Variables*/
 char inpt_buff[MAX_INPUT_SIZE];
 char num1[MAX_INPUT_SIZE], num2[MAX_INPUT_SIZE];
 char add_result[ADDITION_OUTPUT_SIZE], sub_result[SUBTRACTION_OUTPUT_SIZE];
@@ -14,6 +17,10 @@ char multi_result[MULTIPLICATION_OUTPUT_SIZE], div_result[DIVISION_OUTPUT_SIZE];
 int negative_flag;
 
 
+/**
+ * @brief  program entry point
+ * @retval int
+ */
 int main(int argc, char *argv[])
 {   
     int cont = 1;
@@ -27,19 +34,24 @@ int main(int argc, char *argv[])
 }
 
 
-void choose_option(void)
+
+/**
+ * @brief  getting user's operation choice & inputs , calling chosen operation func & display  func
+ * @retval none
+ */
+static void choose_option(void)
 {   
     int opt = 0;
 
     /*print options & get choice of operations from user*/
     printf("\nChoose operation:\n");
-    printf("1.Addition,  2.Subtraction,  3.Multiplication,  4.Division\n");
+    printf("1.Addition \n2.Subtraction  \n3.Multiplication  \n4.Division\n");
     printf("Enter your choice:");
     scanf("%d", &opt);
 
     /*reset input_buff & get 1st number & copy it to num1 array [right shifted]*/
     memset(inpt_buff,0,MAX_INPUT_SIZE);
-    printf("input first number :");
+    printf("\ninput first number :");
     scanf("%s", inpt_buff);
     copy_to_num_arr(num1,inpt_buff,MAX_INPUT_SIZE);
 
@@ -71,8 +83,11 @@ void choose_option(void)
     }
 }
 
-
-void copy_to_num_arr (char num[], char buff[], int num_size)
+/**
+ * @brief  copy and arrange input number to respective number array
+ * @retval none
+ */
+static void copy_to_num_arr (char num[], char buff[], int num_size)
 {   
     /*Getting the difference between max size and input size to get right shifted new start index */
 
@@ -95,7 +110,12 @@ void copy_to_num_arr (char num[], char buff[], int num_size)
     }
 }
 
-void display_result(char *result, int size)
+
+/**
+ * @brief  Display result after calculation
+ * @retval none
+ */
+static void display_result(char *result, int size)
 {   
     int first_num_encountered_flag = 0;
     printf("Result: ");

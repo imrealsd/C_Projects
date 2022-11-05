@@ -1,9 +1,16 @@
+/* Included Header Files*/
 #include <stdio.h>
 #include <stdlib.h>
 #include "operations.h"
+
+/*Static Function Prototypes*/
 static int check_bigger_number(char *num1, char *num2);
 
 
+/**
+ * @brief  adds two number arrays
+ * @retval none
+ */
 void operation_addition (char num1_arr[], char num2_arr[], char result_arr[])
 {   
     int sum = 0, remainder = 0, carry = 0, temp = 0;
@@ -20,7 +27,10 @@ void operation_addition (char num1_arr[], char num2_arr[], char result_arr[])
     result_arr[0] = carry + 48;
 }
 
-
+/**
+ * @brief  subtract two number arrays
+ * @retval none
+ */
 void operation_subtraction (char num1_arr[], char num2_arr[], char result_arr[], int* negative_flag)
 {
     int borrow = 0, diff = 0, temp = 0;
@@ -59,17 +69,30 @@ void operation_subtraction (char num1_arr[], char num2_arr[], char result_arr[],
     }
 }
 
-
+/**
+ * @brief  multliplies two number arrays
+ * @retval none
+ */
 void operation_multiplication (char num1_arr[], char num2_arr[], char result_arr[])
 {
     
 }
 
+
+/**
+ * @brief  devides one number array by another
+ * @retval none
+ */
 void operation_division (char num1_arr[], char num2_arr[], char result_arr[])
 {
     
 }
 
+
+/**
+ * @brief  checks which number array holds larger value
+ * @retval int
+ */
 static int check_bigger_number(char *num1, char *num2)
 {   
     /*check for bigger element at same index */
