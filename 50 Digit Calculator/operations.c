@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "operations.h"
+#include <string.h>
 
 /*Static Function Prototypes*/
 static int check_bigger_number(char *num1, char *num2);
@@ -74,13 +75,45 @@ void operation_subtraction (char num1_arr[], char num2_arr[], char result_arr[],
  * @retval none
  */
 void operation_multiplication (char num1_arr[], char num2_arr[], char result_arr[])
-{
+{   
+
+    char temp_buff[MAX_INPUT_SIZE];
+    int shift_val = 0, sum = 0, carry = 0, temp, result_index;
+    memset(temp_buff, 0, MAX_INPUT_SIZE);
+
+    /**
+     * multiply all elements of num1 with one element of num2 ,  put resuls in temp_buff
+     * multiply all elements of num1 with next element of num2 , add results with prev temp_buff elements [1 left shift]
+     * continue for all num2 elements..
+     */
+    for (int i = MAX_INPUT_SIZE-2; i >= 0; i--){
+        for (int j = MAX_INPUT_SIZE-2; j >= 0; j--){
+            temp_buff[j-shift_val] += (num1_arr[j]-48) * (num2_arr[i]-48);
+        }
+        shift_val++;
+    }
+
+    /*Adjust carry of temp_buff and put final result in result_arr*/
+
+    result_index = MULTIPLICATION_OUTPUT_SIZE - 2;
     
+    for (int i = MAX_INPUT_SIZE-2; i >= 0; i--){
+
+        temp = temp_buff[i] + carry;
+        carry = temp / 10;
+        sum = temp % 10;
+        result_arr[result_index] = sum + 48;
+        result_index--;
+    }
+    result_arr[result_index] = carry + 48;
+
+    /*multi-out-size-1 elememt is null character*/
+    result_arr[MULTIPLICATION_OUTPUT_SIZE-1] = 0;
 }
 
 
 /**
- * @brief  devides one number array by another
+ * @brief  devides one number array  by another
  * @retval none
  */
 void operation_division (char num1_arr[], char num2_arr[], char result_arr[])
