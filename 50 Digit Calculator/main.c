@@ -79,6 +79,13 @@ static void choose_option(void)
         break;
 
     case 3:
+        /*reset result array, multiply numbers & display result*/
+        memset(multi_result,'0',MULTIPLICATION_OUTPUT_SIZE);
+        operation_multiplication(num1, num2, multi_result);
+        display_result(multi_result, MULTIPLICATION_OUTPUT_SIZE);
+        break;
+
+    case 4:
 
     }
 }
