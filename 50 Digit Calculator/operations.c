@@ -116,10 +116,42 @@ void operation_multiplication (char num1_arr[], char num2_arr[], char result_arr
  * @brief  devides one number array  by another
  * @retval none
  */
-void operation_division (char num1_arr[], char num2_arr[], char result_arr[])
+void operation_division (char num1_arr[], char num2_arr[], char result_arr[], char remainder_arr[])
 {
+    // if (num1 < num2){}
+
+    char uint_arr[MAX_INPUT_SIZE];
+    char add_buff[MAX_INPUT_SIZE];
+    char add_result_buff[ADDITION_OUTPUT_SIZE];
+    char sub_buffer[MAX_INPUT_SIZE];
+    char sub_result_buff[SUBTRACTION_OUTPUT_SIZE];
+    int negative_flag = 0;
     
-}
+    memset(add_buff, '0', MAX_INPUT_SIZE);
+    memset(sub_buffer, '0', MAX_INPUT_SIZE);
+    memset(add_result_buff, '0', ADDITION_OUTPUT_SIZE);
+    memset(sub_result_buff, '0', SUBTRACTION_OUTPUT_SIZE);
+    memset(uint_arr, '0', MAX_INPUT_SIZE);
+
+    uint_arr[MAX_INPUT_SIZE-2] = '1';
+
+    while (negative_flag == 0){
+
+        /**
+         * do num1 - num2 , store result in sub_result_arr
+         * clear num1 & copy sub_result into num1 
+         * add add_buff with unit_arr store into add_result buff
+         * copy add_result_buff to add_buff
+         * repeat
+         */
+        operation_subtraction(num1_arr, num2_arr,sub_result_buff, &negative_flag);
+        memset(num1_arr, '0', MAX_INPUT_SIZE);
+        strcpy(num1_arr, add_result_buff);
+        operation_addition(add_buff, uint_arr, add_result_buff);
+        memset(add_buff, '0', MAX_INPUT_SIZE);
+        strcpy(add_buff, add_result_buff+1);
+    }
+}   
 
 
 /**
@@ -131,6 +163,7 @@ static int check_bigger_number(char *num1, char *num2)
     /*check for bigger element at same index */
     for (int i = 0; i < MAX_INPUT_SIZE-1; i++){
 
+        /*if num1 is bigger return 1 else return 0*/
         if (num1[i] > num2[i])
             return 1;
 
