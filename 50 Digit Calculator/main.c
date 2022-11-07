@@ -4,6 +4,7 @@
 #include <string.h>
 #include "operations.h"
 
+
 /* Static Function Prototypes */
 static void choose_option(void);
 static void copy_to_num_arr (char num[], char buff[], int num_size);
@@ -14,6 +15,7 @@ char inpt_buff[MAX_INPUT_SIZE];
 char num1[MAX_INPUT_SIZE], num2[MAX_INPUT_SIZE];
 char add_result[ADDITION_OUTPUT_SIZE], sub_result[SUBTRACTION_OUTPUT_SIZE];
 char multi_result[MULTIPLICATION_OUTPUT_SIZE], div_result[DIVISION_OUTPUT_SIZE];
+char div_remainder[DIVISION_OUTPUT_SIZE];
 int negative_flag;
 
 
@@ -86,9 +88,16 @@ static void choose_option(void)
         break;
 
     case 4:
-
+        /*reset result array, divide num1 by num2 & display result & remainder*/
+        memset(div_result,'0', DIVISION_OUTPUT_SIZE);
+        memset(div_remainder, '0', DIVISION_OUTPUT_SIZE);
+        operation_division(num1, num2, div_result, div_remainder);
+        display_result(div_result, DIVISION_OUTPUT_SIZE);
+        display_result(div_remainder, DIVISION_OUTPUT_SIZE);
+        break;
     }
 }
+
 
 /**
  * @brief  copy and arrange input number to respective number array
