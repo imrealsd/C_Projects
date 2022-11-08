@@ -92,8 +92,11 @@ static void choose_option(void)
         memset(div_result,'0', DIVISION_OUTPUT_SIZE);
         memset(div_remainder, '0', DIVISION_OUTPUT_SIZE);
         operation_division(num1, num2, div_result, div_remainder);
+        printf("Quotient ");
         display_result(div_result, DIVISION_OUTPUT_SIZE);
+        printf("Remainder ");
         display_result(div_remainder, DIVISION_OUTPUT_SIZE);
+       
         break;
     }
 }
