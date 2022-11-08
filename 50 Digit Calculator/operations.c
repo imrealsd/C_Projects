@@ -6,6 +6,7 @@
 
 /*Static Function Prototypes*/
 static int check_bigger_number(char *num1, char *num2);
+static void display_result1(char *result, int size);
 
 
 /**
@@ -118,7 +119,10 @@ void operation_multiplication (char num1_arr[], char num2_arr[], char result_arr
  */
 void operation_division (char num1_arr[], char num2_arr[], char result_arr[], char remainder_arr[])
 {
-    // if (num1 < num2){}
+    if (!check_bigger_number(num1_arr, num2_arr)){
+        printf("Decimal point not supported\n");
+        return;
+    }
 
     char uint_arr[MAX_INPUT_SIZE];
     char add_buff[MAX_INPUT_SIZE];
@@ -135,8 +139,10 @@ void operation_division (char num1_arr[], char num2_arr[], char result_arr[], ch
 
     uint_arr[MAX_INPUT_SIZE-2] = '1';
 
-    while (negative_flag == 0){
+    while (check_bigger_number(num1_arr, num2_arr)){
 
+        printf("running..\n");
+        display_result1(add_buff, MAX_INPUT_SIZE);
         /**
          * do num1 - num2 , store result in sub_result_arr
          * clear num1 & copy sub_result into num1 
@@ -146,11 +152,16 @@ void operation_division (char num1_arr[], char num2_arr[], char result_arr[], ch
          */
         operation_subtraction(num1_arr, num2_arr,sub_result_buff, &negative_flag);
         memset(num1_arr, '0', MAX_INPUT_SIZE);
-        strcpy(num1_arr, add_result_buff);
+        strcpy(num1_arr, sub_result_buff);
         operation_addition(add_buff, uint_arr, add_result_buff);
         memset(add_buff, '0', MAX_INPUT_SIZE);
         strcpy(add_buff, add_result_buff+1);
     }
+    strcpy(result_arr, add_buff);
+    strcpy(remainder_arr, num1_arr);
+
+    result_arr[MAX_INPUT_SIZE-1] = 0;
+    remainder_arr[MAX_INPUT_SIZE-1] = 0;
 }   
 
 
@@ -172,4 +183,25 @@ static int check_bigger_number(char *num1, char *num2)
     }
     /*if 2 numbers are same return 1*/
     return 1;
+}
+
+
+static void display_result1(char *result, int size)
+{   
+    int first_num_encountered_flag = 0;
+    printf("Result: ");
+
+    /*print negative sign in case subtraction: [negative-flag = 1]*/
+    //if (negative_flag){printf("-");}
+
+    /*print only after the first non zero element is found*/
+    for (int i = 0; i < size; i++){
+        
+        if (result[i] != '0')
+            first_num_encountered_flag = 1;
+
+        if (first_num_encountered_flag == 1)
+            printf("%c", result[i]);
+    }
+    printf("\n");
 }
