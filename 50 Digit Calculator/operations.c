@@ -6,7 +6,6 @@
 
 /*Static Function Prototypes*/
 static int check_bigger_number(char *num1, char *num2);
-static void display_result1(char *result, int size);
 
 
 /**
@@ -140,9 +139,6 @@ void operation_division (char num1_arr[], char num2_arr[], char result_arr[], ch
     uint_arr[MAX_INPUT_SIZE-2] = '1';
 
     while (check_bigger_number(num1_arr, num2_arr)){
-
-        printf("running..\n");
-        display_result1(add_buff, MAX_INPUT_SIZE);
         /**
          * do num1 - num2 , store result in sub_result_arr
          * clear num1 & copy sub_result into num1 
@@ -185,23 +181,3 @@ static int check_bigger_number(char *num1, char *num2)
     return 1;
 }
 
-
-static void display_result1(char *result, int size)
-{   
-    int first_num_encountered_flag = 0;
-    printf("Result: ");
-
-    /*print negative sign in case subtraction: [negative-flag = 1]*/
-    //if (negative_flag){printf("-");}
-
-    /*print only after the first non zero element is found*/
-    for (int i = 0; i < size; i++){
-        
-        if (result[i] != '0')
-            first_num_encountered_flag = 1;
-
-        if (first_num_encountered_flag == 1)
-            printf("%c", result[i]);
-    }
-    printf("\n");
-}
