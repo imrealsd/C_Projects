@@ -15,7 +15,7 @@ static void error(char *error_message);
 
 
 /**
- * @brief  : Throw error with user defined msg & exit
+ * @brief  : Main Logic , Program Entry Point
  * @param  : char *Port_No ( argv[1])
  * @retval : int
  */
