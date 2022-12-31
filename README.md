@@ -1,2 +1,2 @@
 # C Applications
-File Handling , Networking & basic applications developed in C
+File Handling & Networking applications developed in C
