@@ -49,29 +49,34 @@ int main(int argc, char *argv[])
     if (bind_status < 0){
         error("[-] Binding Error\n");
     }
-    printf("[+] Successfully Binded IP & Port\n");
+    printf("[+] Successfully Binded To Port\n");
 
-    listen(server_sock_descriptor, 5);
+    listen(server_sock_descriptor, 1);
+    memset(&client_addr, 0, sizeof(client_addr));
 
-    while (1){
-
-        memset(&client_addr, 0, sizeof(client_addr));
-
-        /* program waits @ accept func until client request arrives*/
-        client_sock_descriptor = accept(server_sock_descriptor,(struct sockaddr*)&client_addr, &addr_size);
-        printf("[+] Connected\n");
-
+    /* program waits @ accept func until client request arrives*/
+    client_sock_descriptor = accept(server_sock_descriptor,(struct sockaddr*)&client_addr, &addr_size);
+    printf("[+] Successfully Connected\n");
+    
+    do{
+        
         memset(msgBuffer, 0, sizeof(msgBuffer));
         recv(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
-        printf("Client: %s\n", msgBuffer);
+        printf("USER-2: %s", msgBuffer);
+        if (strcmp(msgBuffer, "BYE\n") == 0)
+            break;
 
         memset(msgBuffer, 0, sizeof(client_addr));
-        strcpy(msgBuffer, "Hello From Server\n");
+        printf("USER-1: ");
+        fgets(msgBuffer, BUFF_SIZE, stdin);
         send(client_sock_descriptor, msgBuffer, strlen(msgBuffer), 0);
 
-        close(client_sock_descriptor);
-        printf("[-] Disconnected\n");
-    }
+    } while (strcmp(msgBuffer, "BYE\n") != 0);
+
+    close(client_sock_descriptor);
+    close(server_sock_descriptor);
+
+    printf("[-] Disconnected\n");
     return 0;
 }
 
