@@ -52,18 +52,24 @@ int main(int argc, char *argv[])
     if(connection_status < 0){
         error("[-] Connection Error\n");
     }
-    printf("[+] Sucessfully Connected To Server\n");
+    printf("[+] Sucessfully Connected\n");
 
-    memset(msgBuffer, 0, BUFF_SIZE);
-    strcpy(msgBuffer, "Hello From Client\n");
-    send(socket_fd, msgBuffer, BUFF_SIZE, 0);
+    do {
+        memset(msgBuffer, 0, BUFF_SIZE);
+        printf("USER-2: ");
+        fgets(msgBuffer, BUFF_SIZE, stdin);
+        send(socket_fd, msgBuffer, BUFF_SIZE, 0);
+        if (strcmp(msgBuffer, "BYE\n") == 0)
+            break;
 
-    memset(msgBuffer, 0, BUFF_SIZE);
-    recv(socket_fd, msgBuffer, BUFF_SIZE, 0);
-    printf("Server:%s\n", msgBuffer);
+        memset(msgBuffer, 0, BUFF_SIZE);
+        recv(socket_fd, msgBuffer, BUFF_SIZE, 0);
+        printf("USER-1: %s", msgBuffer);
+
+    } while (strcmp(msgBuffer, "BYE\n") != 0);
 
     close(socket_fd);
-    printf("[-] Connection Closed\n");
+    printf("[-] Disconnected\n");
 
     return 0;
 }
