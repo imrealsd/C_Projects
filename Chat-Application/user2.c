@@ -48,11 +48,13 @@ int main(int argc, char *argv[])
     sock_addr.sin_port = htons(atoi(argv[1]));
     sock_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
 
+    /*Program waits @ conect func until handshake is done with srever: [if Non Blocking Mode is used]*/
     connection_status =  connect(socket_fd, (struct sockaddr *)&sock_addr, sizeof(sock_addr));
     if(connection_status < 0){
         error("[-] Connection Error\n");
     }
     printf("[+] Sucessfully Connected\n");
+
 
     do {
         memset(msgBuffer, 0, BUFF_SIZE);
