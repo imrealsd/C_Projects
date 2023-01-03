@@ -54,13 +54,15 @@ int main(int argc, char *argv[])
     listen(server_sock_descriptor, 1);
     memset(&client_addr, 0, sizeof(client_addr));
 
-    /* program waits @ accept func until client request arrives*/
+    /* program waits @ accept func until client request arrives [if Non Blocking Mode is not used]*/
     client_sock_descriptor = accept(server_sock_descriptor,(struct sockaddr*)&client_addr, &addr_size);
     printf("[+] Successfully Connected\n");
+
     
     do{
         
         memset(msgBuffer, 0, sizeof(msgBuffer));
+        /*Program waits until data arrives [if Non Blocking Mode is not used]*/
         recv(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
         printf("USER-2: %s", msgBuffer);
         if (strcmp(msgBuffer, "BYE\n") == 0)
