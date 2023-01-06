@@ -21,7 +21,11 @@ struct sockaddr_in  server_addr, client_addr;
 socklen_t addr_size;
 char msgBuffer[BUFF_SIZE];
 
-
+/**
+ * @brief : create socket & bind port 
+ * @param : char*
+ * @retval: none
+ */
 void setup_server(char *port)
 {   
 
@@ -43,6 +47,11 @@ void setup_server(char *port)
     printf("[+] Successfully Binded To Port\n");
 }
 
+/**
+ * @brief : listen & wait for client
+ * @param : none
+ * @retval: none
+ */
 void waitFor_client(void){
 
     listen(server_sock_descriptor, 1);
@@ -54,7 +63,11 @@ void waitFor_client(void){
 
 }
 
-
+/**
+ * @brief :  get input form  client
+ * @param : char* char * int*
+ * @retval: none
+ */
 void get_input(char *num1, char *num2, int *operation){
         
     memset(msgBuffer, 0, sizeof(msgBuffer));
@@ -98,6 +111,12 @@ void get_input(char *num1, char *num2, int *operation){
     }
 }
 
+
+/**
+ * @brief : send result to client
+ * @param : char*
+ * @retval: none
+ */
 void send_output(char *result)
 {   
     memset(msgBuffer, 0, sizeof(msgBuffer));
@@ -105,6 +124,11 @@ void send_output(char *result)
     send(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0); 
 }
 
+/**
+ * @brief  : close connection with client
+ * @param  : none
+ * @retval : none 
+ */
 void close_connection(void)
 {
     close(client_sock_descriptor);
