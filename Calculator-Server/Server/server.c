@@ -8,31 +8,22 @@
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <server.h>
 #define BUFF_SIZE 1024
 
 /*Static Functions Prototype*/
 static void error(char *error_message);
 
 
-/**
- * @brief  : Main Logic , Program Entry Point
- * @param  : char *Port_No ( argv[1])
- * @retval : int
- */
-int main(int argc, char *argv[])
-{   
-    /**
-     * user is supposed to give port address as cmd-line argument 
-     * if not given, throw error
-     */
-    if (argc < 2){
-        error("[-] Port Not Provided\n");
-    }
+/*Global Variables*/
+int server_sock_descriptor, client_sock_descriptor, bind_status;
+struct sockaddr_in  server_addr, client_addr;
+socklen_t addr_size;
+char msgBuffer[BUFF_SIZE];
 
-    int server_sock_descriptor, client_sock_descriptor, bind_status;
-    struct sockaddr_in  server_addr, client_addr;
-    socklen_t addr_size;
-    char msgBuffer[BUFF_SIZE];
+
+void setup_server(char *port)
+{   
 
     server_sock_descriptor = socket(AF_INET, SOCK_STREAM, 0);
     if (server_sock_descriptor < 0){
@@ -42,7 +33,7 @@ int main(int argc, char *argv[])
 
     memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(atoi(argv[1]));
+    server_addr.sin_port = htons(atoi(port));
     server_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
 
     bind_status = bind(server_sock_descriptor,(struct sockaddr*) &server_addr, sizeof(server_addr));
@@ -50,6 +41,9 @@ int main(int argc, char *argv[])
         error("[-] Binding Error\n");
     }
     printf("[+] Successfully Binded To Port\n");
+}
+
+void waitFor_client(void){
 
     listen(server_sock_descriptor, 1);
     memset(&client_addr, 0, sizeof(client_addr));
@@ -58,28 +52,62 @@ int main(int argc, char *argv[])
     client_sock_descriptor = accept(server_sock_descriptor,(struct sockaddr*)&client_addr, &addr_size);
     printf("[+] Successfully Connected\n");
 
-    
-    do{
+}
+
+
+void get_input(char *num1, char *num2, int *operation){
         
-        memset(msgBuffer, 0, sizeof(msgBuffer));
-        /*Program waits until data arrives [if Non Blocking Mode is not used]*/
-        recv(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
-        printf("USER-2: %s", msgBuffer);
-        if (strcmp(msgBuffer, "BYE\n") == 0)
+    memset(msgBuffer, 0, sizeof(msgBuffer));
+    strcpy(msgBuffer, "send 1st number:");
+    send(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
+    memset(msgBuffer, 0, sizeof(msgBuffer));
+    recv(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
+    strcpy(num1, msgBuffer);
+
+    memset(msgBuffer, 0, sizeof(msgBuffer));
+    strcpy(msgBuffer, "send 2nd number:");
+    send(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
+    memset(msgBuffer, 0, sizeof(msgBuffer));
+    recv(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
+    strcpy(num2, msgBuffer);
+
+    memset(msgBuffer, 0, sizeof(msgBuffer));
+    strcpy(msgBuffer, "send operation:");
+    send(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
+    memset(msgBuffer, 0, sizeof(msgBuffer));
+    recv(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
+    
+    switch (msgBuffer[0]){
+        case '+':
+            *operation = 1;
             break;
+        case '-':
+            *operation = 2;
+            break;
+        case '*':
+            *operation = 3;
+            break;
+        case '/':
+            *operation = 4;
+            break;
+    }
 
-        memset(msgBuffer, 0, sizeof(client_addr));
-        printf("USER-1: ");
-        fgets(msgBuffer, BUFF_SIZE, stdin);
-        send(client_sock_descriptor, msgBuffer, strlen(msgBuffer), 0);
+    if (strcmp(msgBuffer, "BYE\n") == 0){
+        close_connection();
+        printf("[-] Client Disconnected\n");
+    }
+}
 
-    } while (strcmp(msgBuffer, "BYE\n") != 0);
+void send_output(char *result)
+{   
+    memset(msgBuffer, 0, sizeof(msgBuffer));
+    strcpy(msgBuffer, result);
+    send(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0); 
+}
 
+void close_connection(void)
+{
     close(client_sock_descriptor);
-    close(server_sock_descriptor);
-
-    printf("[-] Disconnected\n");
-    return 0;
 }
 
 /**
