@@ -16,6 +16,7 @@
 
 /*Static Functions Prototype*/
 static void error(char *error_message);
+static void display_result(char *result, int size);
 
 
 /**
@@ -55,20 +56,41 @@ int main(int argc, char *argv[])
     }
     printf("[+] Sucessfully Connected\n");
 
+    /*NUM_1*/
+    memset(msgBuffer, 0, BUFF_SIZE);
+    recv(socket_fd, msgBuffer, BUFF_SIZE, 0);
+    printf("CAL-SERVER: %s\n", msgBuffer);
 
-    do {
-        memset(msgBuffer, 0, BUFF_SIZE);
-        printf("USER-2: ");
-        fgets(msgBuffer, BUFF_SIZE, stdin);
-        send(socket_fd, msgBuffer, BUFF_SIZE, 0);
-        if (strcmp(msgBuffer, "BYE\n") == 0)
-            break;
+    memset(msgBuffer, 0, BUFF_SIZE);
+    printf("ME: ");
+    scanf("%s", msgBuffer);
+    send(socket_fd, msgBuffer, BUFF_SIZE, 0);
 
-        memset(msgBuffer, 0, BUFF_SIZE);
-        recv(socket_fd, msgBuffer, BUFF_SIZE, 0);
-        printf("USER-1: %s", msgBuffer);
+    /*NUM2*/
+    memset(msgBuffer, 0, BUFF_SIZE);
+    recv(socket_fd, msgBuffer, BUFF_SIZE, 0);
+    printf("CAL-SERVER: %s\n", msgBuffer);
 
-    } while (strcmp(msgBuffer, "BYE\n") != 0);
+    memset(msgBuffer, 0, BUFF_SIZE);
+    printf("ME: ");
+    scanf("%s", msgBuffer);
+    send(socket_fd, msgBuffer, BUFF_SIZE, 0);
+
+    /*OPERATON*/
+    memset(msgBuffer, 0, BUFF_SIZE);
+    recv(socket_fd, msgBuffer, BUFF_SIZE, 0);
+    printf("CAL-SERVER: %s\n", msgBuffer);
+
+    memset(msgBuffer, 0, BUFF_SIZE);
+    printf("ME: ");
+    scanf("%s", msgBuffer);
+    send(socket_fd, msgBuffer, BUFF_SIZE, 0);
+
+    /*RESULT*/
+    memset(msgBuffer, 0, BUFF_SIZE);
+    recv(socket_fd, msgBuffer, BUFF_SIZE, 0);
+    printf("CAL-SERVER:");
+    display_result(msgBuffer, BUFF_SIZE);
 
     close(socket_fd);
     printf("[-] Disconnected\n");
@@ -87,3 +109,22 @@ static void error(char *error_message)
     exit(1);
 }
 
+/**
+ * @brief  Display result after calculation
+ * @retval none
+ */
+static void display_result(char *result, int size)
+{   
+    int first_num_encountered_flag = 0;
+
+    /*print only after the first non zero element is found*/
+    for (int i = 0; i < size; i++){
+        
+        if (result[i] != '0')
+            first_num_encountered_flag = 1;
+
+        if (first_num_encountered_flag == 1)
+            printf("%c", result[i]);
+    }
+    printf("\n");
+}
