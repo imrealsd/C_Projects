@@ -3,11 +3,11 @@
 #include <stdint.h>
 #include <string.h>
 #include "operations.h"
+#include "server.h"
 
 
 /* Static Function Prototypes */
-static void choose_option(void);
-static void copy_to_num_arr (char num[], char buff[], int num_size);
+static void initiate_operation(char *, char *, int *);
 static void display_result(char *result, int size);
 
 /*Global Variables*/
@@ -16,7 +16,7 @@ char num1[MAX_INPUT_SIZE], num2[MAX_INPUT_SIZE];
 char add_result[ADDITION_OUTPUT_SIZE], sub_result[SUBTRACTION_OUTPUT_SIZE];
 char multi_result[MULTIPLICATION_OUTPUT_SIZE], div_result[DIVISION_OUTPUT_SIZE];
 char div_remainder[DIVISION_OUTPUT_SIZE];
-int negative_flag;
+int negative_flag, choice;
 
 
 /**
@@ -25,13 +25,14 @@ int negative_flag;
  */
 int main(int argc, char *argv[])
 {   
-    int cont = 1;
-
-    while (cont){
-        choose_option();
-        printf("\nWant to Continue ? press '1' for yes , '0' for no:");
-        scanf("%d", &cont);
-    }
+    if (argc < 2){
+        printf("Port not provided\n");
+        return 1;
+    }   
+    setup_server(argv[1]);
+    waitFor_client();
+    get_input(num1, num2, &choice);
+    initiate_operation(num1, num2, &choice);
     return 0;
 }
 
@@ -41,28 +42,9 @@ int main(int argc, char *argv[])
  * @brief  getting user's operation choice & inputs , calling chosen operation func & display  func
  * @retval none
  */
-static void choose_option(void)
+static void initiate_operation(char *num1, char *num2, int *choice)
 {   
-    int opt = 0;
-
-    /*print options & get choice of operations from user*/
-    printf("\nChoose operation:\n");
-    printf("1.Addition \n2.Subtraction  \n3.Multiplication  \n4.Division\n");
-    printf("Enter your choice:");
-    scanf("%d", &opt);
-
-    /*reset input_buff & get 1st number & copy it to num1 array [right shifted]*/
-    memset(inpt_buff,0,MAX_INPUT_SIZE);
-    printf("\ninput first number :");
-    scanf("%s", inpt_buff);
-    copy_to_num_arr(num1,inpt_buff,MAX_INPUT_SIZE);
-
-    /*reset input_buff & get 2nd number & copy it to num2 array [right shifted]*/
-    memset(inpt_buff,0,MAX_INPUT_SIZE);
-    printf("input second number:");
-    scanf("%s", inpt_buff);
-    copy_to_num_arr(num2,inpt_buff,MAX_INPUT_SIZE);
-
+    int opt = *choice;
 
     switch (opt){
     
@@ -101,33 +83,6 @@ static void choose_option(void)
     }
 }
 
-
-/**
- * @brief  copy and arrange input number to respective number array
- * @retval none
- */
-static void copy_to_num_arr (char num[], char buff[], int num_size)
-{   
-    /*Getting the difference between max size and input size to get right shifted new start index */
-
-    int input_size = strlen(buff);
-    int new_start_index = num_size - input_size - 1;  // 1 for null character
-
-    memset(num,0,MAX_INPUT_SIZE);
-
-    /* Right shifting the array in 2 steps:
-     * step 1. filling empty left positions with '0' upto new_start_index - 1
-     * step 2. copying the array from buffer [from index 0] to num [from new start index]
-    */
-
-    for (int i = 0; i < new_start_index; i++){
-        num[i] = '0';
-    }
-    for (int i = 0; i < input_size; i++){
-        num[new_start_index] = buff[i];
-        new_start_index++;
-    }
-}
 
 
 /**
