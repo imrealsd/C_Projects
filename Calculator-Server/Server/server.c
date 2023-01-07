@@ -8,12 +8,13 @@
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include <server.h>
+#include "server.h"
+#include "operations.h"
 #define BUFF_SIZE 1024
 
 /*Static Functions Prototype*/
 static void error(char *error_message);
-
+static void copy_to_num_arr (char num[], char buff[]);
 
 /*Global Variables*/
 int server_sock_descriptor, client_sock_descriptor, bind_status;
@@ -75,14 +76,14 @@ void get_input(char *num1, char *num2, int *operation){
     send(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
     memset(msgBuffer, 0, sizeof(msgBuffer));
     recv(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
-    strcpy(num1, msgBuffer);
+    copy_to_num_arr(num1, msgBuffer);
 
     memset(msgBuffer, 0, sizeof(msgBuffer));
     strcpy(msgBuffer, "send 2nd number:");
     send(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
     memset(msgBuffer, 0, sizeof(msgBuffer));
     recv(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
-    strcpy(num2, msgBuffer);
+    copy_to_num_arr(num2, msgBuffer);
 
     memset(msgBuffer, 0, sizeof(msgBuffer));
     strcpy(msgBuffer, "send operation:");
@@ -145,3 +146,30 @@ static void error(char *error_message)
     exit(1);
 }
 
+
+/**
+ * @brief  copy and arrange input number to respective number array
+ * @retval none
+ */
+static void copy_to_num_arr (char num[], char buff[])
+{   
+    /*Getting the difference between max size and input size to get right shifted new start index */
+
+    int input_size = strlen(buff);
+    int new_start_index = MAX_INPUT_SIZE - input_size - 1;  // 1 for null character
+
+    memset(num,0,MAX_INPUT_SIZE);
+
+    /* Right shifting the array in 2 steps:
+     * step 1. filling empty left positions with '0' upto new_start_index - 1
+     * step 2. copying the array from buffer [from index 0] to num [from new start index]
+    */
+
+    for (int i = 0; i < new_start_index; i++){
+        num[i] = '0';
+    }
+    for (int i = 0; i < input_size; i++){
+        num[new_start_index] = buff[i];
+        new_start_index++;
+    }
+}
