@@ -16,7 +16,7 @@ char num1[MAX_INPUT_SIZE], num2[MAX_INPUT_SIZE];
 char add_result[ADDITION_OUTPUT_SIZE], sub_result[SUBTRACTION_OUTPUT_SIZE];
 char multi_result[MULTIPLICATION_OUTPUT_SIZE], div_result[DIVISION_OUTPUT_SIZE];
 char div_remainder[DIVISION_OUTPUT_SIZE];
-int negative_flag, choice;
+int negative_flag = 0, choice;
 
 
 /**
@@ -25,14 +25,18 @@ int negative_flag, choice;
  */
 int main(int argc, char *argv[])
 {   
-    if (argc < 2){
-        printf("Port not provided\n");
-        return 1;
-    }   
-    setup_server(argv[1]);
-    waitFor_client();
-    get_input(num1, num2, &choice);
-    initiate_operation(num1, num2, &choice);
+    // if (argc < 2){
+    //     printf("Port not provided\n");
+    //     return 1;
+    // }   
+    setup_server("8888");
+
+    while(1){
+
+        waitFor_client();
+        get_input(num1, num2, &choice);
+        initiate_operation(num1, num2, &choice);
+    }
     return 0;
 }
 
@@ -45,7 +49,6 @@ int main(int argc, char *argv[])
 static void initiate_operation(char *num1, char *num2, int *choice)
 {   
     int opt = *choice;
-
     switch (opt){
     
     case 1:
@@ -53,6 +56,7 @@ static void initiate_operation(char *num1, char *num2, int *choice)
         memset(add_result,0,ADDITION_OUTPUT_SIZE);
         operation_addition(num1,num2,add_result);
         display_result(add_result, ADDITION_OUTPUT_SIZE);
+        send_output(add_result);
         break;
     
     case 2:
@@ -60,6 +64,11 @@ static void initiate_operation(char *num1, char *num2, int *choice)
         memset(sub_result,0,SUBTRACTION_OUTPUT_SIZE);
         operation_subtraction(num1,num2,sub_result, &negative_flag);
         display_result(sub_result, SUBTRACTION_OUTPUT_SIZE);
+        if (negative_flag == 1)
+            send_output("-");
+        else
+            send_output("+");
+        send_output(sub_result);
         break;
 
     case 3:
@@ -67,6 +76,7 @@ static void initiate_operation(char *num1, char *num2, int *choice)
         memset(multi_result,'0',MULTIPLICATION_OUTPUT_SIZE);
         operation_multiplication(num1, num2, multi_result);
         display_result(multi_result, MULTIPLICATION_OUTPUT_SIZE);
+        send_output(multi_result);
         break;
 
     case 4:
@@ -78,11 +88,12 @@ static void initiate_operation(char *num1, char *num2, int *choice)
         display_result(div_result, DIVISION_OUTPUT_SIZE);
         printf("Remainder ");
         display_result(div_remainder, DIVISION_OUTPUT_SIZE);
-       
+        send_output(div_result);
+        send_output(div_remainder);
         break;
     }
+    negative_flag = 0;
 }
-
 
 
 /**
@@ -95,7 +106,8 @@ static void display_result(char *result, int size)
     printf("Result: ");
 
     /*print negative sign in case subtraction: [negative-flag = 1]*/
-    if (negative_flag){printf("-");}
+    if (choice == 2 && negative_flag){printf("-");}
+    
 
     /*print only after the first non zero element is found*/
     for (int i = 0; i < size; i++){
