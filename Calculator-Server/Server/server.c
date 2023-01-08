@@ -106,7 +106,7 @@ void get_input(char *num1, char *num2, int *operation){
             break;
     }
 
-    if (strcmp(msgBuffer, "BYE\n") == 0){
+    if (strcmp(msgBuffer, "BYE") == 0){
         close_connection();
         printf("[-] Client Disconnected\n");
     }
