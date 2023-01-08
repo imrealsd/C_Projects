@@ -32,22 +32,22 @@ void operation_addition (char num1_arr[], char num2_arr[], char result_arr[])
  * @brief  subtract two number arrays
  * @retval none
  */
-void operation_subtraction (char num1_arr[], char num2_arr[], char result_arr[], int* negative_flag)
+void operation_subtraction (char num1_arr[], char num2_arr[], char result_arr[], int* neg_flag)
 {
     int borrow = 0, diff = 0, temp = 0;
     char *big_num, *small_num;
 
     /* check bigger number array & asssign them to big_num , smmall_num arrays
-     * update negative_flag accordingly [1st num > 2nd num => flag = 0] [1st num < 2nd num => flag = 1]
+     * update neg_flag accordingly [1st num > 2nd num => flag = 0] [1st num < 2nd num => flag = 1]
     */ 
     if (check_bigger_number(num1_arr, num2_arr)){
         big_num = num1_arr;
         small_num = num2_arr;
-        *negative_flag = 0;
+        *neg_flag = 0;
     } else {
         big_num = num2_arr;
         small_num = num1_arr;
-        *negative_flag = 1;
+        *neg_flag = 1;
     }
 
     /* subtract ith index elements if subtraction is greater than zero , borrow = 0, diff = temp 
@@ -128,7 +128,7 @@ void operation_division (char num1_arr[], char num2_arr[], char result_arr[], ch
     char add_result_buff[ADDITION_OUTPUT_SIZE];
     char sub_buffer[MAX_INPUT_SIZE];
     char sub_result_buff[SUBTRACTION_OUTPUT_SIZE];
-    int negative_flag = 0;
+    int nflag = 0;
     
     memset(add_buff, '0', MAX_INPUT_SIZE);
     memset(sub_buffer, '0', MAX_INPUT_SIZE);
@@ -146,7 +146,7 @@ void operation_division (char num1_arr[], char num2_arr[], char result_arr[], ch
          * copy add_result_buff to add_buff
          * repeat
          */
-        operation_subtraction(num1_arr, num2_arr,sub_result_buff, &negative_flag);
+        operation_subtraction(num1_arr, num2_arr,sub_result_buff, &nflag);
         memset(num1_arr, '0', MAX_INPUT_SIZE);
         strcpy(num1_arr, sub_result_buff);
         operation_addition(add_buff, uint_arr, add_result_buff);
