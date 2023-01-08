@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
     int socket_fd, connection_status;
     struct sockaddr_in  sock_addr;
     char msgBuffer[BUFF_SIZE];
+    int8_t sub_div_flag = 0;
 
     socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_fd < 0){
@@ -80,17 +81,35 @@ int main(int argc, char *argv[])
     memset(msgBuffer, 0, BUFF_SIZE);
     recv(socket_fd, msgBuffer, BUFF_SIZE, 0);
     printf("CAL-SERVER: %s\n", msgBuffer);
+    if (msgBuffer[0] == 47 || msgBuffer[0] == 45)
+        sub_div_flag = 1;
 
     memset(msgBuffer, 0, BUFF_SIZE);
     printf("ME: ");
     scanf("%s", msgBuffer);
     send(socket_fd, msgBuffer, BUFF_SIZE, 0);
+    
+    /**
+     * RESULT
+     * 1 output for add & multiply
+     * 2 output for subtraction : sign & value
+     * 2 output for quotient & remainder
+     */
 
-    /*RESULT*/
     memset(msgBuffer, 0, BUFF_SIZE);
     recv(socket_fd, msgBuffer, BUFF_SIZE, 0);
     printf("CAL-SERVER:");
     display_result(msgBuffer, BUFF_SIZE);
+
+    /*if sub or div operation*/
+    if (sub_div_flag = 1){
+        
+        memset(msgBuffer, 0, BUFF_SIZE);
+        recv(socket_fd, msgBuffer, BUFF_SIZE, 0);
+        printf(" ");
+        display_result(msgBuffer, BUFF_SIZE);
+    }
+    printf("\n");
 
     close(socket_fd);
     printf("[-] Disconnected\n");
@@ -126,5 +145,5 @@ static void display_result(char *result, int size)
         if (first_num_encountered_flag == 1)
             printf("%c", result[i]);
     }
-    printf("\n");
+    //printf("\n");
 }
