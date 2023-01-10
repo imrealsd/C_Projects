@@ -17,7 +17,14 @@
 /*Static Functions Prototype*/
 static void error(char *error_message);
 static void display_result(char *result, int size);
+static void communicate_with_server(void);
+static void setup_connection(char *);
 
+int socket_fd, connection_status;
+struct sockaddr_in  sock_addr;
+char msgBuffer[BUFF_SIZE];
+int8_t sub_div_flag = 0;
+int cont = 1;
 
 /**
  * @brief  : Main logic , Program Entry Point
@@ -30,15 +37,32 @@ int main(int argc, char *argv[])
      * user is supposed to give port address as cmd-line argument 
      * if not given, throw error
      */
-    // if (argc < 2){
-    //     error("[-] Port Not Provided\n");
-    // }
+    if (argc < 2){
+        error("[-] Port Not Provided\n");
+    }
 
-    int socket_fd, connection_status;
-    struct sockaddr_in  sock_addr;
-    char msgBuffer[BUFF_SIZE];
-    int8_t sub_div_flag = 0;
+    setup_connection(argv[1]);
 
+    while (cont){
+
+        communicate_with_server();
+
+        printf("\nwant to coninue ? [y/n]:");
+        getchar();
+        char stat = getchar();
+    }
+
+    close(socket_fd);
+    printf("[-] Disconnected\n");
+
+    return 0;
+}
+
+
+
+static void setup_connection(char * port)
+{
+   
     socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_fd < 0){
         error("[-] Filed Creating Socket\n");
@@ -47,7 +71,7 @@ int main(int argc, char *argv[])
 
     memset(&sock_addr, 0, sizeof(sock_addr));
     sock_addr.sin_family = AF_INET;
-    sock_addr.sin_port = htons(atoi("8888")) ; //htons(atoi(argv[1]));
+    sock_addr.sin_port = htons(atoi(port));
     sock_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
 
     /*Program waits @ conect func until handshake is done with srever: [if Non Blocking Mode is used]*/
@@ -56,7 +80,12 @@ int main(int argc, char *argv[])
         error("[-] Connection Error\n");
     }
     printf("[+] Sucessfully Connected\n");
+}
 
+
+
+static void communicate_with_server(void)
+{
     /*NUM_1*/
     memset(msgBuffer, 0, BUFF_SIZE);
     recv(socket_fd, msgBuffer, BUFF_SIZE, 0);
@@ -110,18 +139,8 @@ int main(int argc, char *argv[])
         printf(" ");
         display_result(msgBuffer, BUFF_SIZE);
     }
+    sub_div_flag = 0;
     printf("\n");
-
-    close(socket_fd);
-    printf("[-] Disconnected\n");
-
-    return 0;
-}
-
-
-static void communicate_with_server(void)
-{
-
 }
 
 

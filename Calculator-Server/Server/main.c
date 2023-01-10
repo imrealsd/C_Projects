@@ -16,7 +16,7 @@ char num1[MAX_INPUT_SIZE], num2[MAX_INPUT_SIZE];
 char add_result[ADDITION_OUTPUT_SIZE], sub_result[SUBTRACTION_OUTPUT_SIZE];
 char multi_result[MULTIPLICATION_OUTPUT_SIZE], div_result[DIVISION_OUTPUT_SIZE];
 char div_remainder[DIVISION_OUTPUT_SIZE];
-int negative_flag = 0, choice;
+int negative_flag = 0, choice, cont = 1;
 
 
 /**
@@ -25,21 +25,27 @@ int negative_flag = 0, choice;
  */
 int main(int argc, char *argv[])
 {   
-    // if (argc < 2){
-    //     printf("Port not provided\n");
-    //     return 1;
-    // }   
-    setup_server("8888");
+    if (argc < 2){
+        printf("Port not provided\n");
+        return 1;
+    }   
+
+    setup_server(argv[1]);
 
     while(1){
 
+        printf("hello\n");
         waitFor_client();
-        get_input(num1, num2, &choice);
-        initiate_operation(num1, num2, &choice);
+
+        while (cont){
+
+            get_input(num1, num2, &choice);
+            initiate_operation(num1, num2, &choice);
+        }
+        close_connection();
     }
     return 0;
 }
-
 
 
 /**

@@ -64,6 +64,7 @@ void waitFor_client(void){
 
 }
 
+
 /**
  * @brief :  get input form  client
  * @param : char* char * int*
@@ -105,11 +106,6 @@ void get_input(char *num1, char *num2, int *operation){
             *operation = 4;
             break;
     }
-
-    if (strcmp(msgBuffer, "BYE") == 0){
-        close_connection();
-        printf("[-] Client Disconnected\n");
-    }
 }
 
 
@@ -133,6 +129,7 @@ void send_output(char *result)
 void close_connection(void)
 {
     close(client_sock_descriptor);
+    printf("closing\n");
 }
 
 /**
