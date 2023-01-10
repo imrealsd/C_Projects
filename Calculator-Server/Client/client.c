@@ -19,6 +19,7 @@ static void error(char *error_message);
 static void display_result(char *result, int size);
 static void communicate_with_server(void);
 static void setup_connection(char *);
+static void send_alive_status(char *msg);
 
 int socket_fd, connection_status;
 struct sockaddr_in  sock_addr;
@@ -50,6 +51,9 @@ int main(int argc, char *argv[])
         printf("\nwant to coninue ? [y/n]:");
         getchar();
         char stat = getchar();
+
+        if (stat == 'y'){send_alive_status("YA");}
+        else{send_alive_status("NO"); cont = 0;}
     }
 
     close(socket_fd);
@@ -58,6 +62,15 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+/**
+ * @brief : send alive status to server
+ * @param : char*
+ * @retval: none
+ */
+static void send_alive_status(char *msg)
+{
+    send(socket_fd, msg, 2, 0);
+}
 
 
 static void setup_connection(char * port)
@@ -92,7 +105,7 @@ static void communicate_with_server(void)
     printf("CAL-SERVER: %s\n", msgBuffer);
 
     memset(msgBuffer, 0, BUFF_SIZE);
-    printf("ME: ");
+    printf("CLIENT: ");
     scanf("%s", msgBuffer);
     send(socket_fd, msgBuffer, BUFF_SIZE, 0);
 
@@ -102,7 +115,7 @@ static void communicate_with_server(void)
     printf("CAL-SERVER: %s\n", msgBuffer);
 
     memset(msgBuffer, 0, BUFF_SIZE);
-    printf("ME: ");
+    printf("CLIENT: ");
     scanf("%s", msgBuffer);
     send(socket_fd, msgBuffer, BUFF_SIZE, 0);
 
@@ -112,7 +125,7 @@ static void communicate_with_server(void)
     printf("CAL-SERVER: %s\n", msgBuffer);
 
     memset(msgBuffer, 0, BUFF_SIZE);
-    printf("ME: ");
+    printf("CLIENT: ");
     scanf("%s", msgBuffer);
     send(socket_fd, msgBuffer, BUFF_SIZE, 0);
 
