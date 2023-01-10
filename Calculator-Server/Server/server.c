@@ -60,7 +60,7 @@ void waitFor_client(void){
 
     /* program waits @ accept func until client request arrives [if Non Blocking Mode is not used]*/
     client_sock_descriptor = accept(server_sock_descriptor,(struct sockaddr*)&client_addr, &addr_size);
-    printf("[+] Successfully Connected\n");
+    printf("[+] Client Connected\n\n");
 
 }
 
@@ -73,21 +73,21 @@ void waitFor_client(void){
 void get_input(char *num1, char *num2, int *operation){
         
     memset(msgBuffer, 0, sizeof(msgBuffer));
-    strcpy(msgBuffer, "send 1st number:");
+    strcpy(msgBuffer, "Send 1st Number:");
     send(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
     memset(msgBuffer, 0, sizeof(msgBuffer));
     recv(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
     copy_to_num_arr(num1, msgBuffer);
 
     memset(msgBuffer, 0, sizeof(msgBuffer));
-    strcpy(msgBuffer, "send 2nd number:");
+    strcpy(msgBuffer, "Send 2nd Number:");
     send(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
     memset(msgBuffer, 0, sizeof(msgBuffer));
     recv(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
     copy_to_num_arr(num2, msgBuffer);
 
     memset(msgBuffer, 0, sizeof(msgBuffer));
-    strcpy(msgBuffer, "send operation:");
+    strcpy(msgBuffer, "Send Operation Symbol:");
     send(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
     memset(msgBuffer, 0, sizeof(msgBuffer));
     recv(client_sock_descriptor, msgBuffer, sizeof(msgBuffer), 0);
@@ -129,7 +129,7 @@ void send_output(char *result)
 void close_connection(void)
 {
     close(client_sock_descriptor);
-    printf("closing\n");
+    printf("[-] Client Disconnected\n");
 }
 
 /**
@@ -169,4 +169,21 @@ static void copy_to_num_arr (char num[], char buff[])
         num[new_start_index] = buff[i];
         new_start_index++;
     }
+}
+
+
+/**
+ * @brief : check for client active
+ * @param : void
+ * @retval: int
+ */
+int client_alive(void)
+{   
+    char buff[3];
+    recv(client_sock_descriptor, buff, 2, 0);
+
+    if (strcmp(buff, "YA") == 0)
+        return 1;
+    else 
+        return 0;
 }
