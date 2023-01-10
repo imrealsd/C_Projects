@@ -30,9 +30,9 @@ int main(int argc, char *argv[])
      * user is supposed to give port address as cmd-line argument 
      * if not given, throw error
      */
-    if (argc < 2){
-        error("[-] Port Not Provided\n");
-    }
+    // if (argc < 2){
+    //     error("[-] Port Not Provided\n");
+    // }
 
     int socket_fd, connection_status;
     struct sockaddr_in  sock_addr;
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 
     memset(&sock_addr, 0, sizeof(sock_addr));
     sock_addr.sin_family = AF_INET;
-    sock_addr.sin_port = htons(atoi(argv[1]));
+    sock_addr.sin_port = htons(atoi("8888")) ; //htons(atoi(argv[1]));
     sock_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
 
     /*Program waits @ conect func until handshake is done with srever: [if Non Blocking Mode is used]*/
@@ -81,13 +81,14 @@ int main(int argc, char *argv[])
     memset(msgBuffer, 0, BUFF_SIZE);
     recv(socket_fd, msgBuffer, BUFF_SIZE, 0);
     printf("CAL-SERVER: %s\n", msgBuffer);
-    if (msgBuffer[0] == 47 || msgBuffer[0] == 45)
-        sub_div_flag = 1;
 
     memset(msgBuffer, 0, BUFF_SIZE);
     printf("ME: ");
     scanf("%s", msgBuffer);
     send(socket_fd, msgBuffer, BUFF_SIZE, 0);
+
+    if (msgBuffer[0] == 47 || msgBuffer[0] == 45)
+        sub_div_flag = 1;
     
     /**
      * RESULT
@@ -98,11 +99,11 @@ int main(int argc, char *argv[])
 
     memset(msgBuffer, 0, BUFF_SIZE);
     recv(socket_fd, msgBuffer, BUFF_SIZE, 0);
-    printf("CAL-SERVER:");
+    printf("CAL-SERVER: ");
     display_result(msgBuffer, BUFF_SIZE);
 
     /*if sub or div operation*/
-    if (sub_div_flag = 1){
+    if (sub_div_flag == 1){
         
         memset(msgBuffer, 0, BUFF_SIZE);
         recv(socket_fd, msgBuffer, BUFF_SIZE, 0);
@@ -116,6 +117,13 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+
+static void communicate_with_server(void)
+{
+
+}
+
 
 /**
  * @brief  : Throw error with user defined msg & exit
@@ -134,6 +142,7 @@ static void error(char *error_message)
  */
 static void display_result(char *result, int size)
 {   
+   
     int first_num_encountered_flag = 0;
 
     /*print only after the first non zero element is found*/
@@ -145,5 +154,4 @@ static void display_result(char *result, int size)
         if (first_num_encountered_flag == 1)
             printf("%c", result[i]);
     }
-    //printf("\n");
 }
