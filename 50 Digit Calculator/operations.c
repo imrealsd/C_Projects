@@ -77,9 +77,14 @@ void operation_subtraction (char num1_arr[], char num2_arr[], char result_arr[],
 void operation_multiplication (char num1_arr[], char num2_arr[], char result_arr[])
 {   
 
-    char temp_buff[MAX_INPUT_SIZE];
-    int shift_val = 0, sum = 0, carry = 0, temp, result_index;
-    memset(temp_buff, 0, MAX_INPUT_SIZE);
+    int temp_buff[MULTIPLICATION_OUTPUT_SIZE];                     // char over flow [>+127] [use int instead of char]
+    int temp_result[MULTIPLICATION_OUTPUT_SIZE];
+    int shift_val = 0, sum = 0, carry = 0, temp, result_index;      // calculate in int -> adjust carry[serveral times] -> put into char array
+    int index = 0;
+    for (volatile int i = 0; i < MULTIPLICATION_OUTPUT_SIZE; i++){
+        temp_result[i] = 0;
+        temp_buff[i] = 0;
+    }
 
     /**
      * multiply all elements of num1 with one element of num2 ,  put resuls in temp_buff
@@ -88,24 +93,39 @@ void operation_multiplication (char num1_arr[], char num2_arr[], char result_arr
      */
     for (int i = MAX_INPUT_SIZE-2; i >= 0; i--){
         for (int j = MAX_INPUT_SIZE-2; j >= 0; j--){
-            temp_buff[j-shift_val] += (num1_arr[j]-48) * (num2_arr[i]-48);
+            temp_buff[MULTIPLICATION_OUTPUT_SIZE-2-shift_val-index] += (num1_arr[j]-48) * (num2_arr[i]-48);
+            index++;
         }
         shift_val++;
+        index = 0;
     }
 
     /*Adjust carry of temp_buff and put final result in result_arr*/
 
     result_index = MULTIPLICATION_OUTPUT_SIZE - 2;
-    
-    for (int i = MAX_INPUT_SIZE-2; i >= 0; i--){
+    int flag = 0;
+
+    ADJUST_CARRY:
+    for (int i = MULTIPLICATION_OUTPUT_SIZE-2; i >= 0; i--){
 
         temp = temp_buff[i] + carry;
         carry = temp / 10;
         sum = temp % 10;
-        result_arr[result_index] = sum + 48;
+        temp_result[result_index] = sum;
         result_index--;
     }
-    result_arr[result_index] = carry + 48;
+
+    for (int i = 0; i <= MULTIPLICATION_OUTPUT_SIZE-2; i++){
+        if (temp_result[i] > 9){
+            for (int i = 0; i <= MAX_INPUT_SIZE; i++){temp_buff[i] = temp_result[i];}
+            flag = 1;
+            break;
+        }
+    }
+    if (flag == 1){flag = 0; goto ADJUST_CARRY;}
+
+   
+   for (int i = 0; i <= MULTIPLICATION_OUTPUT_SIZE-2; i++){result_arr[i] = temp_result[i] + 48;}
 
     /*multi-out-size-1 elememt is null character*/
     result_arr[MULTIPLICATION_OUTPUT_SIZE-1] = 0;
