@@ -1,3 +1,2 @@
-YET TO IMPLEMENT:
-
-1. Termination condition of client socket
+# A CALCULATOR APP THAT RUNS ON A SERVER 
+# SINGLE CLIENT SYSTEM
