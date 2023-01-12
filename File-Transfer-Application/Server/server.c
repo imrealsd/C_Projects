@@ -23,8 +23,19 @@ void wait_for_client(void)
 }
 
 
-void error(char *msg)
+static void error(char *msg)
 {
     perror(msg);
     exit(1);
+}
+
+
+void send_file(void)
+{
+
+}
+
+void close_client_connection(void)
+{
+
 }
