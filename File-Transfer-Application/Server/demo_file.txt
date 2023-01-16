@@ -1,2 +1,0 @@
-Hello this is a demo file.
-This file will be sent to client over the network.

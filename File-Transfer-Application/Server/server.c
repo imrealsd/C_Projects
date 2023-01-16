@@ -59,7 +59,7 @@ void send_file(void)
     FILE *fp;
     uint8_t byte_count = 0, ch;  /*max 255 byte file can be sent in this config*/
 
-    if ((fp = fopen("demo_file.txt", "r")) == NULL){
+    if ((fp = fopen("tx_demo_file.txt", "r")) == NULL){
         error("[-]Failed to open file\n");
     }
 
@@ -78,6 +78,7 @@ void send_file(void)
             error("[-] Error Sending File\n");
         }
     }
+    fclose(fp);
 }
 
 
