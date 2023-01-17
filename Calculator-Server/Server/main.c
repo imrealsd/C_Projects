@@ -29,18 +29,13 @@ int main(int argc, char *argv[])
         printf("Port not provided\n");
         return 1;
     }   
-
     setup_server(argv[1]);
 
     while(1){
-
         waitFor_client();
-
         while (cont){
-
             get_input(num1, num2, &choice);
             initiate_operation(num1, num2, &choice);
-
             if (client_alive() == 0){
                 break;
             }
