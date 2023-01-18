@@ -11,6 +11,8 @@ struct sockaddr_in server_addr, client_addr;
 int server_fd, client_fd, bind_status;
 socklen_t addr_size;
 
+static void error(char*);
+
 void setup_server(char *port)
 {
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -57,15 +59,17 @@ void send_file(void)
      * Then transmit file [1byte frame]
     */
     FILE *fp;
-    uint8_t byte_count = 0, ch;  /*max 255 byte file can be sent in this config*/
+    uint8_t byte_count = 0;  /*max 255 byte file can be sent in this config*/
+    char ch;
 
-    if ((fp = fopen("tx_demo_file.txt", "r")) == NULL){
+    if ((fp = fopen("file.txt", "r")) == NULL){
         error("[-]Failed to open file\n");
     }
 
     while ((ch = fgetc(fp)) != EOF){
         byte_count++;
     }
+
     msgbuff[0] = byte_count;
     send(client_fd, msgbuff, BUFF_SIZE, 0);
 
@@ -78,6 +82,7 @@ void send_file(void)
             error("[-] Error Sending File\n");
         }
     }
+    printf("[+] File Successfully Sent\n");
     fclose(fp);
 }
 

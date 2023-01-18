@@ -45,7 +45,6 @@ int main(int argc, char *argv[])
     receive_file();
     close(socket_fd);
     printf("[-] Disconnected\n");
-
     return 0;
 }
 
@@ -56,15 +55,18 @@ static void receive_file(void)
     uint8_t byte_count = 0;
     uint8_t buff[1];
 
-    fp = fopen("rx_demo_file.txt","w");
+    fp = fopen("file.txt","w");
 
     /*recv file size in bytes*/
     recv(socket_fd, &byte_count, 1, 0);
 
     while (byte_count--){
-        recv(socket_fd, buff, 1, 0);
+        if(recv(socket_fd, buff, 1, 0) == -1){
+            error("[-] Failed to receive file\n");
+        }
         fputc(buff[0], fp);
     }
+    printf("[+] File Successfully Received\n");
     fclose(fp);
 }
 
