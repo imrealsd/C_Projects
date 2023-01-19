@@ -6,13 +6,21 @@
 #include "server.h"
 #define BUFF_SIZE 1
 
+/*private function prototypes*/
+static void error(char*);
+
+/*Global variables*/
 uint8_t msgbuff[BUFF_SIZE];
 struct sockaddr_in server_addr, client_addr;
 int server_fd, client_fd, bind_status;
 socklen_t addr_size;
 
-static void error(char*);
 
+/**
+ * @brief  : setup socket , bind with port
+ * @param  : char *port
+ * @retval : none
+ */
 void setup_server(char *port)
 {
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -33,7 +41,11 @@ void setup_server(char *port)
     printf("[+] Successfully Binded To Port\n");
 }
 
-
+/**
+ * @brief  : put server in listen mode & wait for client to approach
+ * @param  : none
+ * @retval : none
+ */
 void wait_for_client(void)
 {
     listen(server_fd, 1);
@@ -45,6 +57,11 @@ void wait_for_client(void)
 }
 
 
+/**
+ * @brief  : throw error with messege
+ * @param  : char *messege
+ * @retval : none
+ */
 static void error(char *msg)
 {
     perror(msg);
@@ -52,6 +69,11 @@ static void error(char *msg)
 }
 
 
+/**
+ * @brief  : send text file to client
+ * @param  : none
+ * @retval : none
+ */
 void send_file(void)
 {   
     /**
@@ -66,6 +88,11 @@ void send_file(void)
         error("[-]Failed to open file\n");
     }
 
+    /**
+     * calculate file size
+     * send file size to client
+     * send file 1 byte per frame
+     */
     while ((ch = fgetc(fp)) != EOF){
         byte_count++;
     }
@@ -87,6 +114,11 @@ void send_file(void)
 }
 
 
+/**
+ * @brief  : close client socket
+ * @param  : none
+ * @retval : none
+ */
 void close_client_connection(void)
 {
     close(client_fd);

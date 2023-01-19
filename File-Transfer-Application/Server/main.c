@@ -1,8 +1,14 @@
+/*Header includes*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "server.h"
 
+/**
+ * @brief  : program entry point
+ * @param  : char  *port
+ * @retval : int 
+ */
 int main(int argc, char *argv[])
 {   
     if (argc < 2){

@@ -1,10 +1,3 @@
-/**
- * user2 : programmed as client model
-*/
-
-/**
- * User 1 : programmed as server model
-*/
 
 /*Included Header Files*/
 #include <stdio.h>
@@ -19,7 +12,7 @@ static void error(char *error_message);
 static void receive_file(void);
 static void setup_connection(char *);
 
-
+/*Global variables*/
 int socket_fd, connection_status;
 struct sockaddr_in  sock_addr;
 char msgBuffer[BUFF_SIZE];
@@ -48,7 +41,11 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-
+/**
+ * @brief  :receieve & write file data
+ * @param  :none
+ * @retval :none
+*/
 static void receive_file(void)
 {
     FILE *fp;
@@ -71,7 +68,11 @@ static void receive_file(void)
 }
 
 
-
+/**
+ * @brief  : setup socket , bind with port , connect to server
+ * @param  : char* port
+ * @retval : none
+ */
 static void setup_connection(char * port)
 {
    
