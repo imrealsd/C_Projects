@@ -3,9 +3,17 @@
 #include <string.h>
 #include <time.h>
 
+#include "util.h"
+
 int main(int argc, char *argv[])
 {
-    clock_t start = clock();
-    printf("%ld\n", start);
+    char password[MAX_PASS_LEN];
+    int len;
+
+    util_displayWelcomeMessege("-------Welcome To Password Generator-----\n\n");
+    len = util_getPasswordLength();
+    util_generatePassword(password, len);
+    util_displayGeneratedPassword(password);
+
     return 0;
 }
