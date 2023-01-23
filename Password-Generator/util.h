@@ -1,7 +1,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#define MAX_PASS_LEN 100
+#define MAX_PASS_LEN 101  // 100 digit password + 1 null char
 #define TOTAL_LETTER 26
 #define TOTTAL_NUM 10
 #define TOTAL_SPL_CHAR 20
