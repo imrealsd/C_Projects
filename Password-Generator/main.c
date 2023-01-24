@@ -7,15 +7,20 @@
 
 int main(int argc, char *argv[])
 {
-   
-    const char* const msg = "\n\n--Welcome To Password Generator--\n\n";
     char password[MAX_PASS_LEN];
-    int len;
+    int  passLen;
+    int  passCount;
+    int  passIndex = 1;
 
-    util_displayWelcomeMessege(msg);
-    len = util_getPasswordLength();
-    util_generatePassword(password, len);
-    util_displayGeneratedPassword(password);
-
+    printf("\n--Welcome to Password Generator--\n\n");
+    printf("Enter Number of Password You want to Generate:");
+    scanf("%d", &passCount);
+    
+    while (passCount--){
+        passLen = util_getPasswordLength(passIndex++);
+        util_generatePassword(password, passLen);
+        storePasswordInText(password);
+    }
+    printf("\nPassword Generation Completed\n");
     return 0;
 }
