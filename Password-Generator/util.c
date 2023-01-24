@@ -4,6 +4,7 @@
 #include <time.h>
 #include "util.h"
 
+
 char capitalLetters[TOTAL_LETTER] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P',
                           'Q','R','S','T','U','V','W','X','Y','Z'};
 
@@ -21,18 +22,18 @@ void util_displayWelcomeMessege(const char* const msg)
     printf("%s\n", msg);
 }
 
-int util_getPasswordLength(void)
+int util_getPasswordLength(int passIndex)
 {   
     int passwordLength;
 
-    printf("Enter Password Length [MIN 4 & MAX 100]:");
+    printf("Enter Password_%d Length (min 4 & max 100) :", passIndex);
     scanf("%d", &passwordLength);
 
     return passwordLength;
 }
 
 
-
+ 
 void util_generatePassword(char* const pGeneratedPassword, const int passwordLength)
 {   
     char tempPassword[MAX_PASS_LEN];
@@ -48,7 +49,7 @@ void util_generatePassword(char* const pGeneratedPassword, const int passwordLen
     memset(tempPassword, 0, MAX_PASS_LEN);
 
     if (passwordLength % 4){
-        for (int multiplier = 1; multiplier < 25; multiplier++){
+        for (int multiplier = 1; multiplier <= 25; multiplier++){
             int temp = (4 * multiplier);
             if ((temp - passwordLength) > 0){
                 loopCount = multiplier;
@@ -60,6 +61,7 @@ void util_generatePassword(char* const pGeneratedPassword, const int passwordLen
     }
 
 
+    //TODO: add more randomness to password [different seq of nums, letters, spclchars etc]
     while (loopCount--){
 
         time  = clock();
@@ -76,11 +78,7 @@ void util_generatePassword(char* const pGeneratedPassword, const int passwordLen
         tempPassword[passIndex++] = specialCharacters[splCharIndex];
         tempPassword[passIndex++] = smallLetters[smallLetIndex];
     }
-
-    for (int i = 0; i < passwordLength; i++){
-        pGeneratedPassword[i] = tempPassword[i];
-    }
-    
+    strncpy(pGeneratedPassword, tempPassword, passwordLength);
 }
 
 
@@ -89,4 +87,27 @@ void util_displayGeneratedPassword(const char* const password)
     printf("Password: %s\n\n", password);
 }
 
+
+void storePasswordInText(const char* const password)
+{
+    FILE* pFile;
+    static int count = 1;
+    
+    if (count == 1){
+        remove("passwords.txt");
+        pFile = fopen("passwords.txt", "w");
+        fputs("Generated Passwords:\n\n", pFile);
+        fclose(pFile);
+    }
+
+    pFile = fopen("passwords.txt", "a");
+    fputs("password_", pFile);
+    fprintf(pFile, "%d", count++);
+    fputs(": ", pFile);
+
+    fputs(password, pFile);
+    fputc('\n', pFile);
+
+    fclose(pFile);
+}
 

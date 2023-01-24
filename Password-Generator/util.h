@@ -6,8 +6,9 @@
 #define TOTTAL_NUM 10
 #define TOTAL_SPL_CHAR 20
 
-int  util_getPasswordLength(void);
+int  util_getPasswordLength(int passIndex);
 void util_displayWelcomeMessege(const char* const msg);
+void storePasswordInText(const char* const password);
 void util_displayGeneratedPassword(const char* const password);
 void util_generatePassword(char* const pGeneratedPassword, const int passwordLength);
 
