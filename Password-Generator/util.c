@@ -1,10 +1,23 @@
+/*public header includes*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
+/*private header includes*/
 #include "util.h"
 
+/*private function prototypes*/
 
+/**
+ * @brief  shuffle generated password
+ * @param  char* passoword
+ * @return  none
+ */
+static void util_shufflePassword(char *password);
+
+
+/*capital letttes, small letters, special character & num arrays used to generate password*/
 char capitalLetters[TOTAL_LETTER] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P',
                           'Q','R','S','T','U','V','W','X','Y','Z'};
 
@@ -17,15 +30,12 @@ char specialCharacters[TOTAL_SPL_CHAR] = {'!','#','$','%','^','&','*','(',')','~
                               '{','}','[',']','|'};
 
 
-void util_displayWelcomeMessege(const char* const msg)
-{
-    printf("%s\n", msg);
-}
+
 
 int util_getPasswordLength(int passIndex)
 {   
     int passwordLength;
-
+    /*Get password length from the user*/
     printf("Enter Password_%d Length (min 4 & max 100) :", passIndex);
     scanf("%d", &passwordLength);
 
@@ -48,6 +58,11 @@ void util_generatePassword(char* const pGeneratedPassword, const int passwordLen
     memset(pGeneratedPassword, 0, MAX_PASS_LEN);
     memset(tempPassword, 0, MAX_PASS_LEN);
 
+    /**
+     * one iteraton of while loop generate 4 digit password
+     * if password length is multiple of 4 , run the loop for (password length / 4) times
+     * else run nearest multiple of 4 (bigger than password length) times
+     */
     if (passwordLength % 4){
         for (int multiplier = 1; multiplier <= 25; multiplier++){
             int temp = (4 * multiplier);
@@ -60,8 +75,12 @@ void util_generatePassword(char* const pGeneratedPassword, const int passwordLen
         loopCount = (passwordLength / 4);
     }
 
-
-    //TODO: add more randomness to password [different seq of nums, letters, spclchars etc]
+    /**
+     * take 4 cpu clock values to generate 4 index of 4 different password elements
+     * store them into tempPassword
+     * shuffle them after the loop terminates
+     * copy passwordLength num of elemets of tempPassword to pGeneratedPassoword  (final)
+     */
     while (loopCount--){
 
         time  = clock();
@@ -78,6 +97,7 @@ void util_generatePassword(char* const pGeneratedPassword, const int passwordLen
         tempPassword[passIndex++] = specialCharacters[splCharIndex];
         tempPassword[passIndex++] = smallLetters[smallLetIndex];
     }
+    util_shufflePassword(tempPassword);
     strncpy(pGeneratedPassword, tempPassword, passwordLength);
 }
 
@@ -93,13 +113,19 @@ void storePasswordInText(const char* const password)
     FILE* pFile;
     static int count = 1;
     
+    /**
+     * at the first time of password generation :
+     * remove prev password file
+     * add new blank file
+     * write file header text
+     */
     if (count == 1){
         remove("passwords.txt");
         pFile = fopen("passwords.txt", "w");
         fputs("Generated Passwords:\n\n", pFile);
         fclose(pFile);
     }
-
+    /*write generated password along with it's index num in text file*/
     pFile = fopen("passwords.txt", "a");
     fputs("password_", pFile);
     fprintf(pFile, "%d", count++);
@@ -111,3 +137,30 @@ void storePasswordInText(const char* const password)
     fclose(pFile);
 }
 
+
+static void util_shufflePassword(char *password)
+{   
+    char subString1[MAX_PASS_LEN];
+    char subString2[MAX_PASS_LEN];
+    int  len = strlen(password);
+    int subLen1 = len/2;
+    int subLen2 = (len - subLen1);
+    int i = 0;
+    int j = 0;
+    int k = 0;
+
+    /*split the password into 2 different subarrays of size (len/2) & (len - (len/2))*/
+    memset(subString1, 0, MAX_PASS_LEN);
+    memset(subString2, 0, MAX_PASS_LEN);
+    strncpy(subString1, password, (subLen1));
+    strncpy(subString2, (password + (subLen1)), subLen2);
+
+    /*take one element form each subarray and put them one after another in final passoword , like card shuffling*/
+    while ((i < len) && (j < subLen2) && (k < subLen1)){
+        password[i++] = subString2[j++];
+        password[i] = subString1[k++];
+    }
+    // if len is odd (len - (len/2)) is 1 element bigger than (len/2) , put the last element into final password
+    if (len % 2)
+        password[i] = subString2[j];
+}
