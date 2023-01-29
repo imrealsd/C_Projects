@@ -1,9 +1,9 @@
 build:
-	gcc captcha.c main.c -o app.out
+	gcc main.c captcha.c -o app.out
 run:
-	make build
+	./app.out
 debug:
-	gcc -g captcha.c main.c -o debug
+	gcc -g main.c captcha.c -o debug
 	gdb debug
 clean:
 	rm app.out
