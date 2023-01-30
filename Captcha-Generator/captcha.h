@@ -14,7 +14,10 @@
 #define TOTAL_OPERATION 2
 #define MIN_THREE_DIG_NUM 100
 
+
 void captcha_generateCaptcha(char* captcha);
+void captcha_takeUserInput(char *userInputCaptcha);
 void captcha_displayCaptcha(const char* const captcha);
+int  captcha_isCaptchaMatched(char* systeCaptcha, char* userInputCaptcha);
 
 #endif //  CAPTCHA_H
