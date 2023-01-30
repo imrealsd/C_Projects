@@ -103,5 +103,50 @@ void captcha_displayCaptcha(const char* const captcha)
 
     printf("|              |\n");
     printf("----------------\n");
-
 }
+
+
+void captcha_takeUserInput(char *userInputCaptcha)
+{
+    printf("Type Here:");
+    scanf("%s", userInputCaptcha);
+}
+
+
+int captcha_isCaptchaMatched(char* systeCaptcha, char* userInputCaptcha)
+{   
+    int num1;
+    int num2;
+    int result;
+    int usrResult;
+
+    if (strlen(systeCaptcha) == ALPHANUMERIC_CAP_SIZE){
+
+        if (strncmp(systeCaptcha, userInputCaptcha, (GEN_CAP_SIZE-1))){
+            return 1;
+        }
+        return 0;
+
+    } else if (strlen(systeCaptcha) == ARITHMATIC_CAP_SIZE) {
+
+        num1 = ((systeCaptcha[0] - 48) * 10) + (systeCaptcha[1] - 48);
+        num2 = ((systeCaptcha[3] - 48) * 10) + (systeCaptcha[4] - 48);
+        usrResult = ((userInputCaptcha[0] - 48) * 10) + (userInputCaptcha[1] - 48);
+
+        if (systeCaptcha[2] == '+')
+            result = num1 + num2;
+        else
+            result = num1 - num2;
+        
+        if (result == usrResult)
+            return 1;
+        return 0;
+    }
+    return 0;
+}
+
+
+
+// TODO 1. Take typed captcha form user 
+//      2. match user typed captcha with system generated captcha
+//      3. write main() func 
