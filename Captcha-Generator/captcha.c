@@ -133,13 +133,15 @@ int captcha_isCaptchaMatched(char* systeCaptcha, char* userInputCaptcha)
         num2 = ((systeCaptcha[3] - 48) * 10) + (systeCaptcha[4] - 48);
         usrResult = ((userInputCaptcha[0] - 48) * 10) + (userInputCaptcha[1] - 48);
 
-        if (systeCaptcha[2] == '+')
+        if (systeCaptcha[2] == '+'){
             result = num1 + num2;
-        else
+        } else {
             result = num1 - num2;
-        
-        if (result == usrResult)
+        }
+
+        if (result == usrResult){
             return 1;
+        }
         return 0;
     }
     return 0;
