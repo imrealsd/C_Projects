@@ -1,6 +1,9 @@
 #include "captcha.h"
 #include <time.h>
+
+
 static int is_odd(time_t num);
+static void swap(int* num1, int* num2);
 static void captcha_generateAlphanumeric(char* captcha);
 static void captcha_generateArithmatic(char* captcha);
 
@@ -51,11 +54,14 @@ static int is_odd(time_t num)
 static void captcha_generateAlphanumeric(char* captcha)
 {
     time_t randNum = clock();
-
     captcha[0] = smallLetters[(randNum % TOTAL_LETTER)];
+    randNum = clock();
     captcha[1] = numbers[(randNum % TOTAL_NUM)];
+    randNum = clock();
     captcha[2] = capitalLetters[(randNum % TOTAL_LETTER)];
+    randNum = clock();
     captcha[3] = specialCharacters[(randNum % TOTAL_SPL_CHAR)];
+    randNum = clock();
     captcha[4] = numbers[(randNum % TOTAL_NUM)];
 }
 
@@ -67,6 +73,7 @@ static void captcha_generateArithmatic(char* captcha)
     int num1;
     int num2;
     int opIndex;
+    int temp;
 
     randNum = clock();
     num1 = (randNum % MIN_THREE_DIG_NUM);
@@ -74,7 +81,10 @@ static void captcha_generateArithmatic(char* captcha)
     opIndex = (randNum % TOTAL_OPERATION);
     randNum = clock();
     num2 = ((3 *randNum) % MIN_THREE_DIG_NUM);
-    
+
+    if (num1 > num2){
+       swap(&num1, &num2);
+    }
     
     captcha[1] = ((num2 / 10) % 10) + 48;
     captcha[0] = (num2 % 10) + 48;
@@ -86,6 +96,15 @@ static void captcha_generateArithmatic(char* captcha)
     captcha[7] = ' ';
     captcha[8] = '?';
 }
+
+static void swap(int* num1, int* num2)
+{
+    int temp;
+    temp = *num1;
+    *num1 = *num2;
+    *num2 = temp;
+}
+
 
 void captcha_displayCaptcha(const char* const captcha)
 {   
@@ -107,8 +126,9 @@ void captcha_displayCaptcha(const char* const captcha)
 
 
 void captcha_takeUserInput(char *userInputCaptcha)
-{
-    printf("Type Here:");
+{   
+    memset(userInputCaptcha, 0, GEN_CAP_SIZE);
+    printf("Type Here: ");
     scanf("%s", userInputCaptcha);
 }
 
@@ -118,11 +138,12 @@ int captcha_isCaptchaMatched(char* systeCaptcha, char* userInputCaptcha)
     int num1;
     int num2;
     int result;
-    int usrResult;
+    int usrResult = 0;
+    int index = 0;
 
     if (strlen(systeCaptcha) == ALPHANUMERIC_CAP_SIZE){
 
-        if (strncmp(systeCaptcha, userInputCaptcha, (GEN_CAP_SIZE-1))){
+        if (!strncmp(systeCaptcha, userInputCaptcha, ALPHANUMERIC_CAP_SIZE)){
             return 1;
         }
         return 0;
@@ -131,7 +152,11 @@ int captcha_isCaptchaMatched(char* systeCaptcha, char* userInputCaptcha)
 
         num1 = ((systeCaptcha[0] - 48) * 10) + (systeCaptcha[1] - 48);
         num2 = ((systeCaptcha[3] - 48) * 10) + (systeCaptcha[4] - 48);
-        usrResult = ((userInputCaptcha[0] - 48) * 10) + (userInputCaptcha[1] - 48);
+
+        while (userInputCaptcha[index] != 0){
+            usrResult = (usrResult * 10) + (userInputCaptcha[index] - 48);
+            index++;
+        }
 
         if (systeCaptcha[2] == '+'){
             result = num1 + num2;
