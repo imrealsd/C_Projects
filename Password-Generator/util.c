@@ -55,6 +55,7 @@ void util_generatePassword(char* const pGeneratedPassword, const int passwordLen
     int loopCount;
     clock_t time;
 
+    //initialize temppassword & pGeneratedPassword array
     memset(pGeneratedPassword, 0, MAX_PASS_LEN);
     memset(tempPassword, 0, MAX_PASS_LEN);
 
@@ -104,6 +105,7 @@ void util_generatePassword(char* const pGeneratedPassword, const int passwordLen
 
 void util_displayGeneratedPassword(const char* const password)
 {
+    // print generated password on console
     printf("Password: %s\n\n", password);
 }
 
@@ -128,12 +130,13 @@ void storePasswordInText(const char* const password)
     /*write generated password along with it's index num in text file*/
     pFile = fopen("passwords.txt", "a");
     fputs("password_", pFile);
+    // put index of password
     fprintf(pFile, "%d", count++);
     fputs(": ", pFile);
-
+    // put password
     fputs(password, pFile);
     fputc('\n', pFile);
-
+    // close file
     fclose(pFile);
 }
 
@@ -149,9 +152,10 @@ static void util_shufflePassword(char *password)
     int j = 0;
     int k = 0;
 
-    /*split the password into 2 different subarrays of size (len/2) & (len - (len/2))*/
+    /*initialise two su strings */
     memset(subString1, 0, MAX_PASS_LEN);
     memset(subString2, 0, MAX_PASS_LEN);
+    /*split the password into 2 different subarrays of size (len/2) & (len - (len/2))*/
     strncpy(subString1, password, (subLen1));
     strncpy(subString2, (password + (subLen1)), subLen2);
 
