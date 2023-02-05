@@ -81,25 +81,15 @@ void sudoku_generateSudoku(void)
     row = 1;
     col = 0;
 
-    while (row < 9){
-        index = 0;
-        while (col < 9){
-            if ((! is_existingInRow(row, index)) && (! is_existingInColumn(col, index)) 
-                                         && (! is_existingInSubunit(row, col, index))){
-
-                sudoku[row][col] = numbers[index];
-                printf("index: %d ", index);
-
-                col++;
-                index = 0;
-            } else {
-                printf("index: %d ", index);
-                index++;
+    for (row = 1; row < 9; row++){
+        for (col = 0; col < 9; col++){
+            for (index = 0; index < 9; index++){
+                if ((! is_existingInRow(row, index)) && (! is_existingInColumn(col, index)) 
+                                            && (! is_existingInSubunit(row, col, index))){
+                    sudoku[row][col] = numbers[index];
+                }
             }
         }
-        printf("\n");
-        row++;
-        col = 0;
     }
 }
 
@@ -204,6 +194,6 @@ static void generateZeroThRow(char *firstRow)
     }
 }
 
-// TODO : 1. implement is_existingInSubunit function
+// TODO : 1. resolve bug [wrong sudoku sequence : not finding suitable value for some poitions]
 //        2. mask some positions of sudoku acc to difficulty level
 //        3. print final sudoku in a nice design 
