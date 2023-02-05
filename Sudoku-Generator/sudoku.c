@@ -4,16 +4,24 @@ char sudoku[9][9];
 char numbers[9] = {'1','2','3','4','5','6','7','8','9'};
 int gDifficultyLevel;
 
+static void generateZeroThRow(char *firstRow);
+static int generateRandomIndex(void);
+
+static int is_existingInSubunit(int row, int col, int index);
+static int is_existingInColumn(int col, int index);
+static int is_existingInRow(int row, int index);
+
 
 void sudoku_printWelcomeMessege(void)
-{
-    printf("-----------------------------\n");
-    printf("|    *                *     |\n");
-    printf("|   *|*              *|*    |\n");
-    printf("|  **|**  GENERATE  **|**   |\n");
-    printf("| ***|***  SUDOKU  ***|***  |\n");
-    printf("|   _|_              _|_    |\n");
-    printf("-----------------------------\n");
+{   
+    printf("_____________________________\n");
+    printf("|    __________________     |\n");
+    printf("|    |                |     |\n");  
+    printf("|    |     SUDOKU     |     |\n");
+    printf("|    |    GENERATOR   |     |\n");
+    printf("|    |________________|     |\n");
+    printf("|___________________________|\n");
+
 }
 
 void sudoku_getDifficultyLevel(void)
@@ -64,23 +72,47 @@ void sudoku_getDifficultyLevel(void)
 void sudoku_generateSudoku(void)
 {   
     int index;
+    int row;
+    int col;
 
-    memset(sudoku, 0, sizeof(sudoku));
+    memset(sudoku, '0', sizeof(sudoku));
     generateZeroThRow(sudoku[0]);
 
-    for (int row = 1; row < 9; row ++){
-        for (int col = 0; col < 9; col++){
+    row = 1;
+    col = 0;
 
-            TRY_AGAIN:
-            int index = generateRandomIndex();
+    while (row < 9){
+        index = 0;
+        while (col < 9){
             if ((! is_existingInRow(row, index)) && (! is_existingInColumn(col, index)) 
                                          && (! is_existingInSubunit(row, col, index))){
 
                 sudoku[row][col] = numbers[index];
+                printf("index: %d ", index);
+
+                col++;
+                index = 0;
             } else {
-                goto TRY_AGAIN;
+                printf("index: %d ", index);
+                index++;
             }
         }
+        printf("\n");
+        row++;
+        col = 0;
+    }
+}
+
+
+void sudoku_displayGeneratedSudoku(void)
+{   
+    printf("\n\n");
+
+    for (int i = 0; i < 9; i++){
+        for (int j = 0; j < 9; j++){
+            printf("%c ", sudoku[i][j]);
+        }
+        printf("\n");
     }
 }
 
@@ -109,8 +141,33 @@ static int is_existingInColumn(int col, int index)
 
 static int is_existingInSubunit(int row, int col, int index)
 {   
-    // yet to implement
-}
+    int subunitRow;
+    int subunitCol;
+    
+    if ((row <= 2 && row >= 0)){
+        subunitRow = 0;
+    } else if (row <= 5 && row >= 3){
+        subunitRow = 3;
+    } else if (row <= 8 && row >= 6){
+        subunitRow = 6;
+    }
+
+    if (col <= 2 && col >= 0){
+        subunitCol = 0;
+    } else if (col <= 5 && col >= 3){
+        subunitCol = 3;
+    } else if (col <= 8 && col >= 6){
+        subunitCol = 6;
+    }
+
+    for (int i = subunitRow; i < (subunitRow + 3); i++){
+        for (int j = subunitCol; j < (subunitCol + 3); j++){
+            if (numbers[index] == sudoku[i][j])   
+                return 1;
+        }
+    }
+    return 0;
+} 
 
 
 static int generateRandomIndex(void)
