@@ -45,15 +45,15 @@ void sudoku_getDifficultyLevel(void)
  *        0 1 2   3 4 5   6 7 8  [col]
  * 
  *   0    x x x | x x x | x x x     
- *   1    x x x | x x x | x x x    
+ *   1    x 1 x | x 2 x | x 3 x    
  *   2    x x x | x x x | x x x        
  *        ---------------------
  *   3    x x x | x x x | x x x
- *   4    x x x | x x x | x x x  6
+ *   4    x 4 x | x 5 x | x 6 x  
  *   5    x x x | x x x | x x x
  *        ---------------------
  *   6    x x x | x x x | x x x
- *   7    x x x | x x x | x x x
+ *   7    x 7 x | x 8 x | x 9 x
  *   8    x x x | x x x | x x x
  *  [row]
  * ------------------------------
@@ -61,36 +61,19 @@ void sudoku_getDifficultyLevel(void)
 
 /**
  * Genertion Algorithm:
- * initialize all emenets of sudoku to zero
- * generate 9 unique numbers for 0th row
- * generate 1 numbers for 1st row 0th col 
- * check row, col & subunit for duplicates [if duplicate -> generate again]
- * continue for  8 rows x 9 cols
+ * 
+ *   1. Fill all the diagonal 3x3 matrices. [subunit 1,5,9,3,7]
+ *   2. Fill recursively rest of the non-diagonal matrices. [subunit 4,6]
+ *      For every cell to be filled, we try all numbers until
+ *      we find a safe number to be placed.  
+ *   3. Once matrix is fully filled, remove K elements
+ *      randomly to complete game
 */
 
 
 void sudoku_generateSudoku(void)
 {   
-    int index;
-    int row;
-    int col;
-
-    memset(sudoku, '0', sizeof(sudoku));
-    generateZeroThRow(sudoku[0]);
-
-    row = 1;
-    col = 0;
-
-    for (row = 1; row < 9; row++){
-        for (col = 0; col < 9; col++){
-            for (index = 0; index < 9; index++){
-                if ((! is_existingInRow(row, index)) && (! is_existingInColumn(col, index)) 
-                                            && (! is_existingInSubunit(row, col, index))){
-                    sudoku[row][col] = numbers[index];
-                }
-            }
-        }
-    }
+    // yet to implement
 }
 
 
@@ -194,6 +177,6 @@ static void generateZeroThRow(char *firstRow)
     }
 }
 
-// TODO : 1. resolve bug [wrong sudoku sequence : not finding suitable value for some poitions]
+// TODO : 1. implement sudoku_generateSudoku function by maintaining the algorithm
 //        2. mask some positions of sudoku acc to difficulty level
 //        3. print final sudoku in a nice design 
