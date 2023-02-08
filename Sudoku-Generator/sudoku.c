@@ -193,6 +193,6 @@ static void generateIndependentSubunit_1_5_9(void)
 }
 
 
-// TODO : 1. implement sudoku_generateSudoku function by maintaining the algorithm
+// TODO : 1. implement generateRestOfsudoku func
 //        2. mask some positions of sudoku acc to difficulty level
 //        3. print final sudoku in a nice design 
