@@ -1,12 +1,13 @@
 #include "sudoku.h"
 
-char sudoku[9][9];
-char numbers[9] = {'1','2','3','4','5','6','7','8','9'};
+char sudoku[SUDOKU_ROW_SIZE][SUDOKU_COL_SIZE];
+char numbers[SUDOKU_TOTAL_DIFFERENT_NUM] = {'1','2','3','4','5','6','7','8','9'};
 int gDifficultyLevel;
 
 
 static int generateRandomIndex(void);
 static void generateIndependentSubunit_1_5_9(void);
+static void generateRestOfTheSubunits(void);
 static int is_existingInSubunit(int row, int col, int index);
 static int is_existingInColumn(int col, int index);
 static int is_existingInRow(int row, int index);
@@ -14,22 +15,22 @@ static int is_existingInRow(int row, int index);
 
 void sudoku_printWelcomeMessege(void)
 {   
-    printf("_____________________________\n");
-    printf("|    __________________     |\n");
-    printf("|    |                |     |\n");  
-    printf("|    |     SUDOKU     |     |\n");
-    printf("|    |    GENERATOR   |     |\n");
-    printf("|    |________________|     |\n");
-    printf("|___________________________|\n");
+    printf("   ____________________________\n");
+    printf(" ||||    __________________    ||||\n");
+    printf(" ||||    |                |    ||||\n");  
+    printf(" ||||    |     SUDOKU     |    ||||\n");
+    printf(" ||||    |    GENERATOR   |    ||||\n");
+    printf(" ||||    |________________|    ||||\n");
+    printf(" ||||__________________________||||\n");
 
 }
 
 void sudoku_getDifficultyLevel(void)
 {
-    printf("|---------------------------|\n");
-    printf("|1.Easy | 2.Medium | 3.Hard |\n");
-    printf("|---------------------------|\n");
-    printf("Choose Level [1/2/3]: ");
+    printf(" |---------------------------|\n");
+    printf(" |1.Easy | 2.Medium | 3.Hard |\n");
+    printf(" |---------------------------|\n");
+    printf(" Choose Level [1/2/3]: ");
     scanf("%d", &gDifficultyLevel);
 }
 
@@ -62,8 +63,8 @@ void sudoku_getDifficultyLevel(void)
 /**
  * Genertion Algorithm:
  * 
- *   1. Fill all the diagonal 3x3 matrices. [subunit 1,5,9]
- *   2. Fill recursively rest of the non-diagonal matrices. [subunit 4,6,3,7]
+ *   1. Fill all the diagonal 3x3 matrices. [subunit 1,5,9] or [3,5,7]
+ *   2. Fill recursively rest of the non-diagonal matrices. [subunit 4,6,3,7] or [4,6,1,9]
  *      For every cell to be filled, we try all numbers until
  *      we find a safe number to be placed.  
  *   3. Once matrix is fully filled, remove K elements
@@ -75,6 +76,7 @@ void sudoku_generateSudoku(void)
 {   
     memset(sudoku, '0', sizeof(sudoku));
     generateIndependentSubunit_1_5_9();
+    generateRestOfTheSubunits();
 }
 
 
@@ -152,6 +154,55 @@ static int generateRandomIndex(void)
     return index;
 }
 
+static void generateRestOfTheSubunits(void)
+{
+    int subunitRow;
+    int subunitCol;
+    int subunitCount = 0;
+
+    while (subunitCount++ < 6){
+        
+        switch (subunitCount){
+        case 0:
+            subunitRow = 0;
+            subunitCol = 3;
+            break;
+        case 1:
+            subunitRow = 0;
+            subunitCol = 6;
+            break;
+        case 2:
+            subunitRow = 3;
+            subunitCol = 0;
+            break;
+        case 3:
+            subunitRow = 3;
+            subunitCol = 6;
+            break;
+        case 4:
+            subunitRow = 6;
+            subunitCol = 0;
+            break;
+        case 5:
+            subunitRow = 6;
+            subunitCol = 3;
+            break;
+        }
+
+        for (int i = subunitRow; i < (subunitRow + SUDOKU_SUBUNIT_ROW_SIZE); i++){
+            for (int j = subunitCol; j < (subunitCol + SUDOKU_SUBUNIT_COL_SIZE); j++){
+                for (int index = 0; index < 9; index++){
+                    if ((! is_existingInRow(i, index)) && (! is_existingInColumn(j, index)) 
+                    && (! is_existingInSubunit(subunitRow, subunitCol, index))){
+                        sudoku[i][j] = numbers[index];
+                    }
+                }
+            }
+        }
+    }
+}
+
+
 
 static void generateIndependentSubunit_1_5_9(void)
 {   
@@ -193,6 +244,6 @@ static void generateIndependentSubunit_1_5_9(void)
 }
 
 
-// TODO : 1. implement generateRestOfsudoku func
-//        2. mask some positions of sudoku acc to difficulty level
-//        3. print final sudoku in a nice design 
+// TODO : 1. mask some positions of sudoku acc to difficulty level
+//        2. print final sudoku in a nice design 
+//        
