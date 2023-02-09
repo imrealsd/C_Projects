@@ -160,7 +160,7 @@ static void generateRestOfTheSubunits(void)
     int subunitCol;
     int subunitCount = 0;
 
-    while (subunitCount++ < 6){
+    while (subunitCount < 6){
         
         switch (subunitCount){
         case 0:
@@ -199,6 +199,7 @@ static void generateRestOfTheSubunits(void)
                 }
             }
         }
+        subunitCount++;
     }
 }
 
@@ -244,6 +245,7 @@ static void generateIndependentSubunit_1_5_9(void)
 }
 
 
-// TODO : 1. mask some positions of sudoku acc to difficulty level
-//        2. print final sudoku in a nice design 
+// TODO : 1. resolve bug : some places are still zero !!
+//        2. mask some positions of sudoku acc to difficulty level
+//        3. print final sudoku in a nice design 
 //        
