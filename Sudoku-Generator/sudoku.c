@@ -4,7 +4,8 @@ char sudoku[SUDOKU_ROW_SIZE][SUDOKU_COL_SIZE];
 char numbers[SUDOKU_TOTAL_DIFFERENT_NUM] = {'1','2','3','4','5','6','7','8','9'};
 int gDifficultyLevel;
 
-
+static int is_solvable(void);
+static void removeElements(void);
 static int generateRandomIndex(void);
 static void generateIndependentSubunit_1_5_9(void);
 static void generateRestOfTheSubunits(void);
@@ -27,10 +28,8 @@ void sudoku_printWelcomeMessege(void)
 
 void sudoku_getDifficultyLevel(void)
 {
-    printf(" |---------------------------|\n");
-    printf(" |1.Easy | 2.Medium | 3.Hard |\n");
-    printf(" |---------------------------|\n");
-    printf(" Choose Level [1/2/3]: ");
+
+    printf("\n choose Level [0-7]: ");
     scanf("%d", &gDifficultyLevel);
 }
 
@@ -67,7 +66,8 @@ void sudoku_getDifficultyLevel(void)
  *   2. Fill recursively rest of the non-diagonal matrices. [subunit 4,6,3,7] or [4,6,1,9]
  *      For every cell to be filled, we try all numbers until
  *      we find a safe number to be placed.  
- *   3. Once matrix is fully filled, remove K elements
+ *   3. check the sudoku is solvable or not (if any position is still zero or not)
+ *   4. Once matrix is fully filled, remove K elements
  *      randomly to complete game
 */
 
@@ -75,13 +75,57 @@ void sudoku_getDifficultyLevel(void)
 void sudoku_generateSudoku(void)
 {   
     memset(sudoku, '0', sizeof(sudoku));
-    generateIndependentSubunit_1_5_9();
-    generateRestOfTheSubunits();
+
+    while (! is_solvable()) {
+        memset(sudoku, '0', sizeof(sudoku));
+        generateIndependentSubunit_1_5_9();
+        generateRestOfTheSubunits();
+    }
+    removeElements();
 }
 
 
+
+
+static void removeElements(void)
+{   
+    int elements = 0;
+    int row;
+    int col;
+
+    if (gDifficultyLevel == 0){
+        elements = 5;
+    } else if (gDifficultyLevel > 7){
+        gDifficultyLevel = 7;
+    }
+
+    elements = gDifficultyLevel * 10;
+
+    
+    while (elements--){
+        row = generateRandomIndex();
+        col = generateRandomIndex();
+        sudoku[row][col] = ' ';
+    }
+}
+
+
+
+static int is_solvable(void)
+{
+    for (int i = 0; i < 9; i++){
+        for (int j = 0; j < 9; j++){
+            if (sudoku[i][j] == '0'){
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
 void sudoku_displayGeneratedSudoku(void)
 {   
+    printf("\n\n Here's Your Level %d Sudoku:\n", gDifficultyLevel);
     printf("\n\n");
 
     for (int i = 0; i < SUDOKU_ROW_SIZE; i++){
@@ -104,6 +148,7 @@ static int is_existingInRow(int row, int index)
     }
     return 0;
 }
+
 
 
 static int is_existingInColumn(int col, int index)
@@ -149,7 +194,12 @@ static int is_existingInSubunit(int row, int col, int index)
 
 
 static int generateRandomIndex(void)
-{
+{   
+    static int count = 0;
+    if (count == 0){
+        srand((unsigned int) time(NULL));
+        count++;
+    }
     int index = (rand() % SUDOKU_TOTAL_DIFFERENT_NUM);
     return index;
 }
@@ -243,9 +293,4 @@ static void generateIndependentSubunit_1_5_9(void)
         subunitCount++;
     } 
 }
-
-
-// TODO : 1. resolve bug : some places are still zero !!
-//        2. mask some positions of sudoku acc to difficulty level
-//        3. print final sudoku in a nice design 
-//        
+       
