@@ -113,8 +113,8 @@ static void removeElements(void)
 
 static int is_solvable(void)
 {
-    for (int i = 0; i < 9; i++){
-        for (int j = 0; j < 9; j++){
+    for (int i = 0; i < SUDOKU_ROW_SIZE; i++){
+        for (int j = 0; j < SUDOKU_COL_SIZE; j++){
             if (sudoku[i][j] == '0'){
                 return 0;
             }
@@ -122,6 +122,8 @@ static int is_solvable(void)
     }
     return 1;
 }
+
+
 
 void sudoku_displayGeneratedSudoku(void)
 {   
@@ -293,4 +295,5 @@ static void generateIndependentSubunit_1_5_9(void)
         subunitCount++;
     } 
 }
-       
+
+// TODO : comments & func description
