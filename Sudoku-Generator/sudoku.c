@@ -318,9 +318,10 @@ static void generateIndependentSubunit_1_5_9(void)
     int successFlag  = 0;
     int index;
 
-    /* choose subunit for every iteration */
+    
     while (subunitCount < 3){
-
+        
+        /* choose subunit for every iteration */
         if (subunitCount == 0){
             subunitRow = 0;
             subunitCol = 0;
