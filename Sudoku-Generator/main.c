@@ -1,6 +1,12 @@
+/*Public includes*/
 #include <stdio.h>
+
+/*Private includes*/
 #include "sudoku.h"
 
+/**
+ * @brief program entry point 
+ */
 int main(int argc, char *argv[])
 {   
     sudoku_printWelcomeMessege();
