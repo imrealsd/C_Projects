@@ -6,9 +6,31 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
-#define SCREEN_ROW  50   // height
-#define SCREEN_COL  50   // width
+#define SCREEN_ROW  20   // height
+#define SCREEN_COL  20   // width
 
-void snake_addFoodToScreen(char* const gameScreen, const int row, const int col);
+typedef enum {
+
+    True  = 1,
+    Flase = 0
+
+} bool;
+
+typedef struct {
+
+    int row;
+    int column;
+    struct snakeUnit *next;
+
+} snakeUnit;
+
+
+
+void snake_gameInit(char gameScreen[SCREEN_ROW][SCREEN_COL], snakeUnit* pHead);
+void snake_generateFoodPosition(int* const row, int* const col);
+void snake_clearGameScreen(char gameScreen[SCREEN_ROW][SCREEN_COL]);
+void snake_addFoodToGameScreen(char gameScreen[SCREEN_ROW][SCREEN_COL], const int row, const int col);
+void snake_displayGameScreen(char gameScreen[SCREEN_ROW][SCREEN_COL]);
+bool snake_isEatingFood(int foodRow, int foodCol, snakeUnit* pHead);
 
 #endif
