@@ -1,13 +1,12 @@
 #include "snake.h"
 
-
-
-
 char gSpace = ' ' ;
 char gsnakeSymbol = 'o';
 char gFoodSymbol = '*';
 
-void add_initialSnake(char gameScreen [SCREEN_ROW][SCREEN_COL], snakeUnit* pHead );
+static void add_initialSnake(char gameScreen [SCREEN_ROW][SCREEN_COL], snakeUnit* pHead );
+static add_nodeAtBegining(snakeUnit* pHead, int newHeadRow, int newHeadCol);
+static delete_lastNode(snakeUnit* pHead);
 
 
 
@@ -84,24 +83,37 @@ void snake_displayGameScreen(char gameScreen [SCREEN_ROW][SCREEN_COL])
 }
 
 
-void snake_updateSnakePosition(char userInput, char gameScreen [SCREEN_ROW][SCREEN_COL])
-{
+void snake_updateSnakePosition(char userInput, snakeUnit* pHead)
+{   
+    int headRow = pHead->row;
+    int headCol = pHead->column;
+
     if (userInput == 'w'){
+        add_nodeAtBegining(pHead, (headRow + 1), headCol);
+        delete_lastNode(pHead);
 
     } else if (userInput == 's'){
+        add_nodeAtBegining(pHead, (headRow - 1), headCol);
+        delete_lastNode(pHead);
 
     } else if (userInput == 'a'){
+        add_nodeAtBegining(pHead, headRow, (headCol - 1));
+        delete_lastNode(pHead);
 
     } else if (userInput == 'd'){
-
+        add_nodeAtBegining(pHead, headRow, (headCol + 1));
+        delete_lastNode(pHead);
     }
 }
 
-/****** Static Functions ********/
 
-void add_initialSnake(char gameScreen [SCREEN_ROW][SCREEN_COL], snakeUnit* pHead)
+
+
+/****** Private Functions ********/
+
+static void add_initialSnake(char gameScreen [SCREEN_ROW][SCREEN_COL], snakeUnit* pHead)
 {   
-    snakeUnit *temp = (snakeUnit *)malloc(sizeof(snakeUnit));
+    snakeUnit* temp = (snakeUnit *)malloc(sizeof(snakeUnit));
 
     temp->next = NULL;
     temp->row = 0;
@@ -111,3 +123,26 @@ void add_initialSnake(char gameScreen [SCREEN_ROW][SCREEN_COL], snakeUnit* pHead
     gameScreen[pHead->row][pHead->column] = gsnakeSymbol;
 }
 
+static add_nodeAtBegining(snakeUnit* pHead, int newHeadRow, int newHeadCol)
+{
+    snakeUnit* temp = (snakeUnit *)malloc(sizeof(snakeUnit));
+
+    temp->row = newHeadRow;
+    temp->column = newHeadCol;
+    temp->next = pHead;
+    pHead = temp;
+}
+
+
+static delete_lastNode(snakeUnit* pHead)
+{
+    snakeUnit* ptr1 = pHead;
+    snakeUnit* ptr2 = pHead->next;
+
+    while (ptr2->next != NULL){
+        ptr1 = ptr1->next;
+        ptr2 = ptr2->next;
+    }
+    ptr1->next = NULL;
+    free(ptr2);
+}
