@@ -1,10 +1,33 @@
 #include "snake.h"
 
-/* Game main screen */
+/*Global Variables*/
 char gameScreen[SCREEN_ROW][SCREEN_COL];
+snakeUnit *pSnakeHead;
+char userInput;
+
+
+/*Function Prototypes*/
+void changeTerminalBehaviour(void);
+
 
 int main(int argc, char* argv[])
-{   
-    snake_addFoodToScreen(gameScreen, 10, 20);
+{    
+    /*change terminal behaviour to take input without pressing enter*/
+    changeTerminalBehaviour();
+    
+    /*Initialise Game Screen*/
+    snake_gameInit(gameScreen, pSnakeHead);
+    snake_displayGameScreen(gameScreen);
+
+    while (True){
+        userInput = getchar();
+        break;
+    }
     return 0;
+}
+
+
+void changeTerminalBehaviour(void)
+{
+    system ("/bin/stty raw");
 }
