@@ -5,14 +5,14 @@ char gsnakeSymbol = 'o';
 char gFoodSymbol = '*';
 
 static void add_initialSnake(char gameScreen [SCREEN_ROW][SCREEN_COL], snakeUnit* pHead );
-static add_nodeAtBegining(snakeUnit* pHead, int newHeadRow, int newHeadCol);
-static delete_lastNode(snakeUnit* pHead);
+static snakeUnit* add_nodeAtBegining(snakeUnit* pHead, int newHeadRow, int newHeadCol);
+static void delete_lastNode(snakeUnit* pHead);
 
 
 
 void snake_gameInit(char gameScreen [SCREEN_ROW][SCREEN_COL], snakeUnit* pHead)
 {   
-    memset(gameScreen, gSpace, (SCREEN_ROW * SCREEN_COL));
+    snake_resetGameScreen(gameScreen);
     /*Initialize seed of random number generator*/
     srand((unsigned long) time(NULL));
     add_initialSnake(gameScreen, pHead);
@@ -32,14 +32,14 @@ void snake_generateFoodPosition(int* const row, int* const col)
 
 bool snake_isEatingFood(int foodRow, int foodColumn, snakeUnit* pHead)
 {
-    if (pHead->row == foodRow && pHead == foodColumn){
+    if (pHead->row == foodRow && pHead->column == foodColumn){
         return True;
     }
     return Flase;
 }
 
 
-void snake_increaseSnake(snakeUnit* pHead, int foodRow, int foodColumn)
+snakeUnit* snake_increaseSnake(snakeUnit* pHead, int foodRow, int foodColumn)
 {   
     snakeUnit *newUnit = (snakeUnit *)malloc(sizeof(snakeUnit));
 
@@ -47,13 +47,14 @@ void snake_increaseSnake(snakeUnit* pHead, int foodRow, int foodColumn)
     newUnit->column = foodColumn;
     newUnit->next = pHead;
     pHead = newUnit;
+
+    return pHead;
 }
 
 
-void snake_clearGameScreen(char gameScreen [SCREEN_ROW][SCREEN_COL])
+void snake_clearGameScreen(void)
 {   
     system("clear");
-    memset(gameScreen,gSpace, (SCREEN_ROW * SCREEN_COL));
 }
 
 
@@ -69,43 +70,80 @@ void snake_addFoodToGameScreen(char gameScreen [SCREEN_ROW][SCREEN_COL], const i
 }
 
 
-void snake_displayGameScreen(char gameScreen [SCREEN_ROW][SCREEN_COL])
+void snake_displayGameScreen(snakeUnit* pHead,  char gameScreen [SCREEN_ROW][SCREEN_COL])
 {
     int row = 0;
     int col = 0;
 
+    /*clear screen*/
+    system("clear");
+
+    /*print game board*/
+    printf("\n----------------------\n");
     for (row = 0; row < SCREEN_ROW; row++){
+        printf("|");
         for (col = 0; col < SCREEN_COL; col++){
             printf("%c", gameScreen[row][col]);
+            if (col == (SCREEN_COL - 1))
+                printf("|");
         }
-        printf("\n");
+        if (row != (SCREEN_ROW - 1))
+            printf("\n");
+    }
+    printf("\n----------------------\n");
+}
+
+
+
+void snake_addSnakeToGameScreen(snakeUnit* pHead, char gameScreen [SCREEN_ROW][SCREEN_COL])
+{   
+    snakeUnit *ptr = pHead;
+
+    /*update game board*/
+    while (ptr != NULL){
+        gameScreen[ptr->row][ptr->column] = gsnakeSymbol;
+        ptr = ptr->next;
     }
 }
 
 
-void snake_updateSnakePosition(char userInput, snakeUnit* pHead)
+snakeUnit* snake_updateSnakePosition(char userInput, snakeUnit* pHead)
 {   
     int headRow = pHead->row;
     int headCol = pHead->column;
 
     if (userInput == 'w'){
-        add_nodeAtBegining(pHead, (headRow + 1), headCol);
+        pHead = add_nodeAtBegining(pHead, (headRow + 1), headCol);
         delete_lastNode(pHead);
 
     } else if (userInput == 's'){
-        add_nodeAtBegining(pHead, (headRow - 1), headCol);
+        pHead = add_nodeAtBegining(pHead, (headRow - 1), headCol);
         delete_lastNode(pHead);
 
     } else if (userInput == 'a'){
-        add_nodeAtBegining(pHead, headRow, (headCol - 1));
+        pHead = add_nodeAtBegining(pHead, headRow, (headCol - 1));
         delete_lastNode(pHead);
 
     } else if (userInput == 'd'){
-        add_nodeAtBegining(pHead, headRow, (headCol + 1));
+        pHead = add_nodeAtBegining(pHead, headRow, (headCol + 1));
         delete_lastNode(pHead);
     }
+    return pHead;
 }
 
+
+void snake_resetGameScreen(char gameScreen [SCREEN_ROW][SCREEN_COL])
+{   
+    int row;
+    int col;
+
+    /*reset game board*/
+    for (row = 0; row < SCREEN_ROW; row++){
+        for (col = 0; col < SCREEN_COL; col++){
+            gameScreen[row][col] = gSpace;
+        }
+    }
+}
 
 
 
@@ -113,17 +151,13 @@ void snake_updateSnakePosition(char userInput, snakeUnit* pHead)
 
 static void add_initialSnake(char gameScreen [SCREEN_ROW][SCREEN_COL], snakeUnit* pHead)
 {   
-    snakeUnit* temp = (snakeUnit *)malloc(sizeof(snakeUnit));
-
-    temp->next = NULL;
-    temp->row = 0;
-    temp->column = 0;
-    pHead = temp;
-
+    pHead->row = 0;
+    pHead->column = 0;
     gameScreen[pHead->row][pHead->column] = gsnakeSymbol;
 }
 
-static add_nodeAtBegining(snakeUnit* pHead, int newHeadRow, int newHeadCol)
+
+static snakeUnit* add_nodeAtBegining(snakeUnit* pHead, int newHeadRow, int newHeadCol)
 {
     snakeUnit* temp = (snakeUnit *)malloc(sizeof(snakeUnit));
 
@@ -131,10 +165,12 @@ static add_nodeAtBegining(snakeUnit* pHead, int newHeadRow, int newHeadCol)
     temp->column = newHeadCol;
     temp->next = pHead;
     pHead = temp;
+
+    return pHead;
 }
 
 
-static delete_lastNode(snakeUnit* pHead)
+static void delete_lastNode(snakeUnit* pHead)
 {
     snakeUnit* ptr1 = pHead;
     snakeUnit* ptr2 = pHead->next;
@@ -146,3 +182,5 @@ static delete_lastNode(snakeUnit* pHead)
     ptr1->next = NULL;
     free(ptr2);
 }
+
+

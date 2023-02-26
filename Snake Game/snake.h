@@ -6,7 +6,7 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
-#define SCREEN_ROW  20   // height
+#define SCREEN_ROW  10   // height
 #define SCREEN_COL  20   // width
 
 typedef enum {
@@ -16,7 +16,7 @@ typedef enum {
 
 } bool;
 
-typedef struct {
+typedef struct snakeUnit {
 
     int row;
     int column;
@@ -28,9 +28,14 @@ typedef struct {
 
 void snake_gameInit(char gameScreen[SCREEN_ROW][SCREEN_COL], snakeUnit* pHead);
 void snake_generateFoodPosition(int* const row, int* const col);
-void snake_clearGameScreen(char gameScreen[SCREEN_ROW][SCREEN_COL]);
+void snake_clearGameScreen(void);
 void snake_addFoodToGameScreen(char gameScreen[SCREEN_ROW][SCREEN_COL], const int row, const int col);
-void snake_displayGameScreen(char gameScreen[SCREEN_ROW][SCREEN_COL]);
+void snake_displayGameScreen(snakeUnit* pHead,  char gameScreen [SCREEN_ROW][SCREEN_COL]);
 bool snake_isEatingFood(int foodRow, int foodCol, snakeUnit* pHead);
+snakeUnit* snake_increaseSnake(snakeUnit* pHead, int foodRow, int foodColumn);
+void snake_waitGameScreen(int time);
+snakeUnit* snake_updateSnakePosition(char userInput, snakeUnit* pHead);
+void snake_resetGameScreen(char gameScreen [SCREEN_ROW][SCREEN_COL]);
+void snake_addSnakeToGameScreen(snakeUnit* pHead, char gameScreen [SCREEN_ROW][SCREEN_COL]);
 
 #endif
