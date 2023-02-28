@@ -10,13 +10,11 @@ char userInput;
 
 /*Function Prototypes*/
 void changeTerminalBehaviour(void);
-
+void resetTerminalBehaviour(void);
 
 int main(int argc, char* argv[])
 {    
     pSnakeHead = (snakeUnit *)malloc(sizeof(snakeUnit));
-    /*change terminal behaviour to take input without pressing enter*/
-    //changeTerminalBehaviour();
     
     /*Initialise Game Screen*/
     snake_gameInit(gameScreen, pSnakeHead);
@@ -24,9 +22,15 @@ int main(int argc, char* argv[])
     snake_addFoodToGameScreen(gameScreen, foodRow, foodCol);
     snake_displayGameScreen(pSnakeHead, gameScreen);
 
+    
+
     while (True){
 
+        /*change terminal behaviour to take input without pressing enter*/
+        changeTerminalBehaviour();
         userInput = getchar();
+        resetTerminalBehaviour();
+
         pSnakeHead = snake_updateSnakePosition(userInput, pSnakeHead);
 
         if (snake_isEatingFood(foodRow, foodCol, pSnakeHead)){
@@ -43,6 +47,12 @@ int main(int argc, char* argv[])
 
 
 void changeTerminalBehaviour(void)
-{
+{   
     system ("/bin/stty raw");
+}
+
+
+void resetTerminalBehaviour(void)
+{   
+    system ("/bin/stty cooked");
 }
