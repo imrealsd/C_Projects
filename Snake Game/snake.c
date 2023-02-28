@@ -6,7 +6,7 @@ char gFoodSymbol = '*';
 
 static void add_initialSnake(char gameScreen [SCREEN_ROW][SCREEN_COL], snakeUnit* pHead );
 static snakeUnit* add_nodeAtBegining(snakeUnit* pHead, int newHeadRow, int newHeadCol);
-static void delete_lastNode(snakeUnit* pHead);
+static void delete_lastNode(snakeUnit* pHead, int* snakeTailRow, int* snakeTailCol);
 
 
 
@@ -39,16 +39,20 @@ bool snake_isEatingFood(int foodRow, int foodColumn, snakeUnit* pHead)
 }
 
 
-snakeUnit* snake_increaseSnake(snakeUnit* pHead, int foodRow, int foodColumn)
+void snake_increaseSnake(int snakeTailRow, int snakeTailCol, snakeUnit* pHead)
 {   
     snakeUnit *newUnit = (snakeUnit *)malloc(sizeof(snakeUnit));
+    snakeUnit *ptr = pHead;
 
-    newUnit->row = foodRow;
-    newUnit->column = foodColumn;
-    newUnit->next = pHead;
-    pHead = newUnit;
+    newUnit->row = snakeTailRow;
+    newUnit->column = snakeTailCol;
+    newUnit->next = NULL;
 
-    return pHead;
+    while (ptr->next != NULL){
+        ptr = ptr->next;
+    }
+    ptr->next = newUnit;
+
 }
 
 
@@ -107,26 +111,26 @@ void snake_addSnakeToGameScreen(snakeUnit* pHead, char gameScreen [SCREEN_ROW][S
 }
 
 
-snakeUnit* snake_updateSnakePosition(char userInput, snakeUnit* pHead)
+snakeUnit* snake_updateSnakePosition(char userInput, snakeUnit* pHead, int* snakeTailRow, int* snakeTailCol)
 {   
     int headRow = pHead->row;
     int headCol = pHead->column;
 
     if (userInput == 'w'){
-        pHead = add_nodeAtBegining(pHead, (headRow + 1), headCol);
-        delete_lastNode(pHead);
+        pHead = add_nodeAtBegining(pHead, (headRow - 1), headCol);
+        delete_lastNode(pHead, snakeTailRow, snakeTailCol);
 
     } else if (userInput == 's'){
-        pHead = add_nodeAtBegining(pHead, (headRow - 1), headCol);
-        delete_lastNode(pHead);
+        pHead = add_nodeAtBegining(pHead, (headRow + 1), headCol);
+        delete_lastNode(pHead, snakeTailRow, snakeTailCol);
 
     } else if (userInput == 'a'){
         pHead = add_nodeAtBegining(pHead, headRow, (headCol - 1));
-        delete_lastNode(pHead);
+        delete_lastNode(pHead, snakeTailRow, snakeTailCol);
 
     } else if (userInput == 'd'){
         pHead = add_nodeAtBegining(pHead, headRow, (headCol + 1));
-        delete_lastNode(pHead);
+        delete_lastNode(pHead, snakeTailRow, snakeTailCol);
     }
     return pHead;
 }
@@ -170,7 +174,7 @@ static snakeUnit* add_nodeAtBegining(snakeUnit* pHead, int newHeadRow, int newHe
 }
 
 
-static void delete_lastNode(snakeUnit* pHead)
+static void delete_lastNode(snakeUnit* pHead, int* snakeTailRow, int* snakeTailCol)
 {
     snakeUnit* ptr1 = pHead;
     snakeUnit* ptr2 = pHead->next;
@@ -180,7 +184,15 @@ static void delete_lastNode(snakeUnit* pHead)
         ptr2 = ptr2->next;
     }
     ptr1->next = NULL;
+
+    *snakeTailRow = ptr2->row;
+    *snakeTailCol = ptr2->column;
     free(ptr2);
 }
 
 
+// TODO: 1. Add collision rules
+//       2. Add score board
+//       3. Add game termination input key
+//       4. Run snake automatically [make input timeout] [:: Done] 
+//       5. take care of food position if generated inside snake 

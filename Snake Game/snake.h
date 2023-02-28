@@ -32,9 +32,9 @@ void snake_clearGameScreen(void);
 void snake_addFoodToGameScreen(char gameScreen[SCREEN_ROW][SCREEN_COL], const int row, const int col);
 void snake_displayGameScreen(snakeUnit* pHead,  char gameScreen [SCREEN_ROW][SCREEN_COL]);
 bool snake_isEatingFood(int foodRow, int foodCol, snakeUnit* pHead);
-snakeUnit* snake_increaseSnake(snakeUnit* pHead, int foodRow, int foodColumn);
+void snake_increaseSnake(int snakeTailRow, int snakeTailCol, snakeUnit* pHead);
 void snake_waitGameScreen(int time);
-snakeUnit* snake_updateSnakePosition(char userInput, snakeUnit* pHead);
+snakeUnit* snake_updateSnakePosition(char userInput, snakeUnit* pHead, int* snakeTailRow, int* snakeTailCol);
 void snake_resetGameScreen(char gameScreen [SCREEN_ROW][SCREEN_COL]);
 void snake_addSnakeToGameScreen(snakeUnit* pHead, char gameScreen [SCREEN_ROW][SCREEN_COL]);
 
