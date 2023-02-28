@@ -1,16 +1,24 @@
 #include "snake.h"
+#include <unistd.h>
+#include <fcntl.h>
 
 /*Global Variables*/
 char gameScreen[SCREEN_ROW][SCREEN_COL];
 snakeUnit *pSnakeHead;
 int foodRow;
 int foodCol;
-char userInput;
+char userInput[2];
+char userInputCopy;
+int userInputStatus;
+int snakeTailRow;
+int snakeTailCol;
 
 
 /*Function Prototypes*/
 void changeTerminalBehaviour(void);
 void resetTerminalBehaviour(void);
+void readUserInput(int timeout);
+
 
 int main(int argc, char* argv[])
 {    
@@ -22,19 +30,16 @@ int main(int argc, char* argv[])
     snake_addFoodToGameScreen(gameScreen, foodRow, foodCol);
     snake_displayGameScreen(pSnakeHead, gameScreen);
 
-    
-
     while (True){
 
-        /*change terminal behaviour to take input without pressing enter*/
         changeTerminalBehaviour();
-        userInput = getchar();
+        readUserInput(1);
         resetTerminalBehaviour();
 
-        pSnakeHead = snake_updateSnakePosition(userInput, pSnakeHead);
+        pSnakeHead = snake_updateSnakePosition(userInputCopy, pSnakeHead, &snakeTailRow, &snakeTailCol);
 
         if (snake_isEatingFood(foodRow, foodCol, pSnakeHead)){
-            pSnakeHead = snake_increaseSnake(pSnakeHead, foodRow, foodCol);
+            snake_increaseSnake(snakeTailRow, snakeTailCol, pSnakeHead);
             snake_generateFoodPosition(&foodRow, &foodCol);
         }
         snake_resetGameScreen(gameScreen);
@@ -43,6 +48,19 @@ int main(int argc, char* argv[])
         snake_displayGameScreen(pSnakeHead, gameScreen);
     }
     return 0;
+}
+
+
+
+void readUserInput(int timeout)
+{
+    fcntl(0, F_SETFL, fcntl(0, F_GETFL) | O_NONBLOCK);
+    sleep(timeout);
+    userInputStatus = read(0, userInput, 2);
+
+    if (userInputStatus != -1){
+            userInputCopy = userInput[0];
+    } 
 }
 
 
@@ -56,3 +74,5 @@ void resetTerminalBehaviour(void)
 {   
     system ("/bin/stty cooked");
 }
+
+
