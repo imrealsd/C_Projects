@@ -1,7 +1,7 @@
 #include "snake.h"
 
 char gSpace = ' ' ;
-char gsnakeSymbol = 'o';
+char gSnakeSymbol = 'o';
 char gFoodSymbol = '*';
 
 static void add_initialSnake(char gameScreen [SCREEN_ROW][SCREEN_COL], snakeUnit* pHead );
@@ -56,11 +56,6 @@ void snake_increaseSnake(int snakeTailRow, int snakeTailCol, snakeUnit* pHead)
 }
 
 
-void snake_clearGameScreen(void)
-{   
-    system("clear");
-}
-
 
 void snake_waitGameScreen(int time)
 {
@@ -74,7 +69,7 @@ void snake_addFoodToGameScreen(char gameScreen [SCREEN_ROW][SCREEN_COL], const i
 }
 
 
-void snake_displayGameScreen(snakeUnit* pHead,  char gameScreen [SCREEN_ROW][SCREEN_COL])
+void snake_displayGameScreen(snakeUnit* pHead,  char gameScreen [SCREEN_ROW][SCREEN_COL], int score)
 {
     int row = 0;
     int col = 0;
@@ -82,8 +77,11 @@ void snake_displayGameScreen(snakeUnit* pHead,  char gameScreen [SCREEN_ROW][SCR
     /*clear screen*/
     system("clear");
 
+    /*print score*/
+    printf("      SCORE: %d\n", score);
+
     /*print game board*/
-    printf("\n----------------------\n");
+    printf("----------------------\n");
     for (row = 0; row < SCREEN_ROW; row++){
         printf("|");
         for (col = 0; col < SCREEN_COL; col++){
@@ -105,7 +103,7 @@ void snake_addSnakeToGameScreen(snakeUnit* pHead, char gameScreen [SCREEN_ROW][S
 
     /*update game board*/
     while (ptr != NULL){
-        gameScreen[ptr->row][ptr->column] = gsnakeSymbol;
+        gameScreen[ptr->row][ptr->column] = gSnakeSymbol;
         ptr = ptr->next;
     }
 }
@@ -149,6 +147,10 @@ void snake_resetGameScreen(char gameScreen [SCREEN_ROW][SCREEN_COL])
     }
 }
 
+void snake_updateSocreBoard(int *score)
+{
+    *score = *score + 10;
+}
 
 
 /****** Private Functions ********/
@@ -157,7 +159,7 @@ static void add_initialSnake(char gameScreen [SCREEN_ROW][SCREEN_COL], snakeUnit
 {   
     pHead->row = 0;
     pHead->column = 0;
-    gameScreen[pHead->row][pHead->column] = gsnakeSymbol;
+    gameScreen[pHead->row][pHead->column] = gSnakeSymbol;
 }
 
 
@@ -194,5 +196,5 @@ static void delete_lastNode(snakeUnit* pHead, int* snakeTailRow, int* snakeTailC
 // TODO: 1. Add collision rules
 //       2. Add score board
 //       3. Add game termination input key
-//       4. Run snake automatically [make input timeout] [:: Done] 
-//       5. take care of food position if generated inside snake 
+//       4. take care of food position if generated inside snake 
+//       5. find a way to to run snake faster acc to score [decreasing input timeout]
