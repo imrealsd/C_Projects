@@ -25,12 +25,12 @@ typedef struct snakeUnit {
 } snakeUnit;
 
 
-
 void snake_gameInit(char gameScreen[SCREEN_ROW][SCREEN_COL], snakeUnit* pHead);
 void snake_generateFoodPosition(int* const row, int* const col);
 void snake_addFoodToGameScreen(char gameScreen[SCREEN_ROW][SCREEN_COL], const int row, const int col);
 void snake_displayGameScreen(snakeUnit* pHead,  char gameScreen [SCREEN_ROW][SCREEN_COL], int score);
 bool snake_isEatingFood(int foodRow, int foodCol, snakeUnit* pHead);
+bool snake_isColiding(snakeUnit *pHead);
 void snake_increaseSnake(int snakeTailRow, int snakeTailCol, snakeUnit* pHead);
 void snake_waitGameScreen(int time);
 snakeUnit* snake_updateSnakePosition(char userInput, snakeUnit* pHead, int* snakeTailRow, int* snakeTailCol);

@@ -152,6 +152,27 @@ void snake_updateSocreBoard(int *score)
     *score = *score + 10;
 }
 
+bool snake_isColiding(snakeUnit *pHead)
+{   
+    snakeUnit *ptr = pHead->next;
+    int headRow = pHead->row;
+    int headCol = pHead->column;
+
+    if (headRow == -1 || headRow == SCREEN_ROW){
+        return True;
+
+    } else if (headCol == -1 || headCol == SCREEN_COL){
+        return True;
+    }
+
+    while (ptr != NULL){
+        if (ptr->row == headRow && ptr->column == headCol)
+            return True;
+    }
+    return Flase;
+}
+
+
 
 /****** Private Functions ********/
 
@@ -159,6 +180,8 @@ static void add_initialSnake(char gameScreen [SCREEN_ROW][SCREEN_COL], snakeUnit
 {   
     pHead->row = 0;
     pHead->column = 0;
+    pHead->next = NULL;
+
     gameScreen[pHead->row][pHead->column] = gSnakeSymbol;
 }
 
@@ -194,7 +217,5 @@ static void delete_lastNode(snakeUnit* pHead, int* snakeTailRow, int* snakeTailC
 
 
 // TODO: 1. Add collision rules
-//       2. Add score board
-//       3. Add game termination input key
-//       4. take care of food position if generated inside snake 
-//       5. find a way to to run snake faster acc to score [decreasing input timeout]
+//       3. take care of food position if generated inside snake 
+//       4. find a way to to run snake faster acc to score [decreasing input timeout]
