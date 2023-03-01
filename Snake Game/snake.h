@@ -26,7 +26,7 @@ typedef struct snakeUnit {
 
 
 void snake_gameInit(char gameScreen[SCREEN_ROW][SCREEN_COL], snakeUnit* pHead);
-void snake_generateFoodPosition(int* const row, int* const col);
+void snake_generateFoodPosition(int* const row, int* const col, snakeUnit *pHead);
 void snake_addFoodToGameScreen(char gameScreen[SCREEN_ROW][SCREEN_COL], const int row, const int col);
 void snake_displayGameScreen(snakeUnit* pHead,  char gameScreen [SCREEN_ROW][SCREEN_COL], int score);
 bool snake_isEatingFood(int foodRow, int foodCol, snakeUnit* pHead);

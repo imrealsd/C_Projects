@@ -19,15 +19,35 @@ void snake_gameInit(char gameScreen [SCREEN_ROW][SCREEN_COL], snakeUnit* pHead)
 }
 
 
-void snake_generateFoodPosition(int* const row, int* const col)
-{
+void snake_generateFoodPosition(int* const row, int* const col, snakeUnit *pHead)
+{   
+    snakeUnit *ptr;
     int randNum;
+    int generateFlag = 0;
+
+    GENERATE_AGAIN:
 
     randNum = rand() % SCREEN_ROW ;
     *row = randNum;
     randNum = rand() % SCREEN_COL ;
     *col = randNum;
+
+    ptr = pHead;
+    while (ptr != NULL){
+        if (ptr->row == *row && ptr->column == *col){
+            generateFlag = 1;
+            break;
+        }
+        ptr = ptr->next;
+    }
+    
+    if (generateFlag == 1){
+        generateFlag = 0;
+        goto GENERATE_AGAIN;
+    }
 }
+
+
 
 
 bool snake_isEatingFood(int foodRow, int foodColumn, snakeUnit* pHead)
@@ -147,10 +167,13 @@ void snake_resetGameScreen(char gameScreen [SCREEN_ROW][SCREEN_COL])
     }
 }
 
+
 void snake_updateSocreBoard(int *score)
 {
     *score = *score + 10;
 }
+
+
 
 bool snake_isColiding(snakeUnit *pHead)
 {   
@@ -168,6 +191,8 @@ bool snake_isColiding(snakeUnit *pHead)
     while (ptr != NULL){
         if (ptr->row == headRow && ptr->column == headCol)
             return True;
+
+        ptr = ptr->next;
     }
     return Flase;
 }
@@ -216,6 +241,4 @@ static void delete_lastNode(snakeUnit* pHead, int* snakeTailRow, int* snakeTailC
 }
 
 
-// TODO: 1. Add collision rules
-//       3. take care of food position if generated inside snake 
-//       4. find a way to to run snake faster acc to score [decreasing input timeout]
+// TODO: 1. find a way to to run snake faster with the increasing score [decrease input timeout]
