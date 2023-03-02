@@ -99,7 +99,7 @@ void snake_increaseSnake(int snakeTailRow, int snakeTailCol, snakeUnit* pHead)
     snakeUnit *ptr = pHead;
 
     /**
-     * Add new node the tail of the snake [linked list] 
+     * Add new node at the tail of the snake [linked list] 
      * position of new tail node will be last deleted tail node [ given by snake_updatePosition(..) ]
     */
     newUnit->row = snakeTailRow;

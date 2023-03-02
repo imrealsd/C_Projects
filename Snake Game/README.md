@@ -14,7 +14,7 @@ All lower case
 
 # Game Over rules:
 1. Snake hitting the walls.
-2. Snake hitting the itself.
+2. Snake hitting itself.
 
 # Custimization:
 1. customise game screen size by changing 'SCREEN_ROW' & 'SCREEN_COL' constants in the 'snake.h' header file.
@@ -22,4 +22,4 @@ All lower case
 
 # Platform :
 1. suitable for running on linux system.
-2. some functions from 'unistd.h' library is used, like syetem(..), fcntl(..) ; those are not available on windows. 
+2. some functions from 'unistd.h' library are used, like syetem(..), fcntl(..) ; those are not available on windows. 
