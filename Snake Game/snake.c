@@ -10,12 +10,15 @@ static void delete_lastNode(snakeUnit* pHead, int* snakeTailRow, int* snakeTailC
 
 
 
-void snake_gameInit(char gameScreen [SCREEN_ROW][SCREEN_COL], snakeUnit* pHead)
+snakeUnit* snake_gameInit(char gameScreen [SCREEN_ROW][SCREEN_COL])
 {   
+    snakeUnit *pHead = (snakeUnit *)malloc(sizeof(snakeUnit));
+
     snake_resetGameScreen(gameScreen);
-    /*Initialize seed of random number generator*/
     srand((unsigned long) time(NULL));
     add_initialSnake(gameScreen, pHead);
+
+    return pHead;
 }
 
 
@@ -175,7 +178,7 @@ void snake_updateSocreBoard(int *score)
 
 
 
-bool snake_isColiding(snakeUnit *pHead)
+bool snake_isColliding(snakeUnit *pHead)
 {   
     snakeUnit *ptr = pHead->next;
     int headRow = pHead->row;
@@ -197,6 +200,13 @@ bool snake_isColiding(snakeUnit *pHead)
     return Flase;
 }
 
+void snake_terminateGame(char *terminationMsg, int score)
+{
+    system("clear");
+    printf("Your Score: %d\n", score);
+    printf("Game Closed: %s\r\n", terminationMsg);
+    exit(0);
+}
 
 
 /****** Private Functions ********/
