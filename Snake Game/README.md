@@ -1,6 +1,6 @@
 # SNAKE GAME
-Developer : Subhadeep Dhang
-Language Used : C 
+Developer : Subhadeep Dhang ,
+Language Used : C , 
 Date: 02.03.2023 
 
 
