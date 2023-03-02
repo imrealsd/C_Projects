@@ -337,5 +337,3 @@ static void clear_terminal(void)
 {
     system("clear");
 }
-
-// TODO: 1. find a way to to run snake faster with the increasing score [decrease input timeout]
