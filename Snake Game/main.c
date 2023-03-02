@@ -1,65 +1,87 @@
+/* Library Includes */
 #include "main.h"
+ 
 
 /*Global Variables*/
-char gameScreen[SCREEN_ROW][SCREEN_COL];
 snakeUnit *pSnakeHead;
-int  gFoodRow;
-int  gFoodCol;
+char gameScreen[SCREEN_ROW][SCREEN_COL];
 char userInput[2];
 char gUserInputCopy;
+int  gFoodRow;
+int  gFoodCol;
 int  gUserInputStatus;
 int  gSnakeTailRow;
 int  gSnakeTailCol;
 int  gScore = 0;
+long long int gUsTimeout = DEFAULT_TIMEOUT;
 
 
-/*Function Prototypes*/
-void changeTerminalBehaviour(void);
-void resetTerminalBehaviour(void);
-void readUserInput(int timeout);
-void terminateGame(void);
+/* Private Function Prototypes */
+static void changeTerminalBehaviour(void);
+static void resetTerminalBehaviour(void);
+static void readUserInput(long long int usTimeout);
 
 
+
+/**
+ * @brief Program entry Point
+ */
 int main(int argc, char* argv[])
 {    
-    pSnakeHead = (snakeUnit *)malloc(sizeof(snakeUnit));
-    
-    /*Initialise Game Screen*/
-    snake_gameInit(gameScreen, pSnakeHead);
-    snake_generateFoodPosition(&gFoodRow, &gFoodCol);
+    /*Initialise Game, add snake , add food & display game screen*/
+    pSnakeHead = snake_gameInit(gameScreen);
+    snake_generateFoodPosition(&gFoodRow, &gFoodCol, pSnakeHead);
     snake_addFoodToGameScreen(gameScreen, gFoodRow, gFoodCol);
     snake_displayGameScreen(pSnakeHead, gameScreen, gScore);
 
     while (True){
+        
+        /*Get input form user*/
+        readUserInput(gUsTimeout);
+        
+        /*Terminate game if input is 'q'*/
+        if (userInput[0] == 'q'){
+            snake_terminateGame("Exit Button Pressed\n", gScore);
+        }
 
-        readUserInput(1);
-        if (userInput[0] == 'q')
-            terminateGame();
-
+        /*Update snake position according to user input*/
         pSnakeHead = snake_updateSnakePosition(gUserInputCopy, pSnakeHead, &gSnakeTailRow, &gSnakeTailCol);
-
-        if (snake_isEatingFood(gFoodRow, gFoodCol, pSnakeHead)){
+        
+        /*Terminate game if the snake is colliding with the walls or with itself*/
+        if (snake_isColliding(pSnakeHead)){
+            snake_terminateGame("Collision\n", gScore);
+        
+        /* If snake is eating the food, increase snake, update score, generate new food*/
+        } else if (snake_isEatingFood(gFoodRow, gFoodCol, pSnakeHead)){
+            
             snake_increaseSnake(gSnakeTailRow, gSnakeTailCol, pSnakeHead);
             snake_updateSocreBoard(&gScore);
-            snake_generateFoodPosition(&gFoodRow, &gFoodCol);
+            snake_updateSnakeSpeed(gScore, &gUsTimeout);
+            snake_generateFoodPosition(&gFoodRow, &gFoodCol, pSnakeHead);
         }
+
+        /*Reset game screen , add snake, add food , display game screen*/
         snake_resetGameScreen(gameScreen);
         snake_addSnakeToGameScreen(pSnakeHead, gameScreen);
         snake_addFoodToGameScreen(gameScreen, gFoodRow, gFoodCol);
         snake_displayGameScreen(pSnakeHead, gameScreen, gScore);
     }
+
     return 0;
 }
 
 
 
-void readUserInput(int timeout)
+/**
+ * @brief read user input from keyboard
+*/
+static void readUserInput(long long int usTimeout)
 {    
     changeTerminalBehaviour();
 
     /*setup for user input with a fixed timeout*/
     fcntl(0, F_SETFL, fcntl(0, F_GETFL) | O_NONBLOCK);
-    sleep(timeout);
+    usleep(usTimeout);
     gUserInputStatus = read(0, userInput, 2);
 
     resetTerminalBehaviour();
@@ -77,20 +99,18 @@ void readUserInput(int timeout)
 }
 
 
-void terminateGame(void)
-{
-    system("clear");
-    printf("Game Closed\r\n");
-    exit(0);
-}
-
-void changeTerminalBehaviour(void)
+/**
+ * @brief change terminal behaviour to 'raw' [take input without pressing 'Enter' key]
+*/
+static void changeTerminalBehaviour(void)
 {   
     system ("/bin/stty raw");
 }
 
-
-void resetTerminalBehaviour(void)
+/**
+ * @brief reset terminal to normal input mode 
+*/
+static void resetTerminalBehaviour(void)
 {   
     system ("/bin/stty cooked");
 }
