@@ -51,6 +51,14 @@ File Handling & Networking applications developed in C
 │   ├── util.c
 │   └── util.h
 ├── README.md
+├── Snake Game
+│   ├── main.c
+│   ├── main.h
+│   ├── Makefile
+│   ├── README.md
+│   ├── snake.bin
+│   ├── snake.c
+│   └── snake.h
 ├── Sudoku-Generator
 │   ├── main.c
 │   ├── Makefile
@@ -60,4 +68,5 @@ File Handling & Networking applications developed in C
     ├── converter
     ├── converter.c
     └── tempCodeRunnerFile.c
+
 ```
