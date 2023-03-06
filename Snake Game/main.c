@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
         } else if (snake_isEatingFood(gFoodRow, gFoodCol, pSnakeHead)){
             
             snake_increaseSnake(gSnakeTailRow, gSnakeTailCol, pSnakeHead);
-            snake_updateSocreBoard(&gScore);
+            snake_updateScoreBoard(&gScore);
             snake_updateSnakeSpeed(gScore, &gUsTimeout);
             snake_generateFoodPosition(&gFoodRow, &gFoodCol, pSnakeHead);
         }

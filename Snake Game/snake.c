@@ -224,7 +224,7 @@ void snake_resetGameScreen(char gameScreen [SCREEN_ROW][SCREEN_COL])
 }
 
 
-void snake_updateSocreBoard(int *pScore)
+void snake_updateScoreBoard(int *pScore)
 {   
     int increment = 0;
 

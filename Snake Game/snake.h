@@ -134,7 +134,7 @@ void snake_addSnakeToGameScreen(snakeUnit* pHead, char gameScreen [SCREEN_ROW][S
  * @param  score last score.
  * @return void
  */
-void snake_updateSocreBoard(int *score);
+void snake_updateScoreBoard(int *score);
 
 
 /**
