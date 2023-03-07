@@ -179,28 +179,28 @@ snakeUnit* snake_updateSnakePosition(char userInput, snakeUnit* pHead, int* pSna
     int headCol = pHead->column;
 
     /**
-     * snake increasing logic:
+     * snake moving logic:
      * step 1. add new node at the beginning [row , column will be according to input]
      * step 2. delete last node 
     */
 
     if (userInput == 'w'){
-        /*For inpit 'w', add new node by decresing org. head row by 1 unit [going up]*/
+        /*For input 'w', add new node by decresing org. head row by 1 unit [going up]*/
         pHead = add_nodeAtBegining(pHead, (headRow - 1), headCol);
         delete_lastNode(pHead, pSnakeTailRow, pSnakeTailCol);
 
     } else if (userInput == 's'){
-        /*For inpit 's', add new node by incresing org. head row by 1 unit [going down]*/
+        /*For input 's', add new node by incresing org. head row by 1 unit [going down]*/
         pHead = add_nodeAtBegining(pHead, (headRow + 1), headCol);
         delete_lastNode(pHead, pSnakeTailRow, pSnakeTailCol);
 
     } else if (userInput == 'a'){
-        /*For inpit 'a', add new node by decresing org. head column by 1 unit [going left]*/
+        /*For input 'a', add new node by decresing org. head column by 1 unit [going left]*/
         pHead = add_nodeAtBegining(pHead, headRow, (headCol - 1));
         delete_lastNode(pHead, pSnakeTailRow, pSnakeTailCol);
 
     } else if (userInput == 'd'){
-        /*For inpit 'd', add new node by decresing org. head column by 1 unit [going right]*/
+        /*For input 'd', add new node by increasing org. head column by 1 unit [going right]*/
         pHead = add_nodeAtBegining(pHead, headRow, (headCol + 1));
         delete_lastNode(pHead, pSnakeTailRow, pSnakeTailCol);
     }
